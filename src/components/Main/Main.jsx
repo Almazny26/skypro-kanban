@@ -1,37 +1,62 @@
-import Column from '../Column/Column'
+import Column from "../Column/Column";
 
 function Main() {
   const columns = [
     {
       title: "Без статуса",
       cards: [
-        { title: "Название задачи", category: "Web Design", categoryClass: "_orange", date: "30.10.23" }
-      ]
+        {
+          title: "Название задачи",
+          category: "Web Design",
+          categoryClass: "_orange",
+          date: "30.10.23",
+        },
+      ],
     },
     {
-      title: "Нужно сделать", 
+      title: "Нужно сделать",
       cards: [
-        { title: "Название задачи", category: "Research", categoryClass: "_green", date: "30.10.23" }
-      ]
+        {
+          title: "Название задачи",
+          category: "Research",
+          categoryClass: "_green",
+          date: "30.10.23",
+        },
+      ],
     },
     {
       title: "В работе",
       cards: [
-        { title: "Название задачи", category: "Research", categoryClass: "_green", date: "30.10.23" }
-      ]
+        {
+          title: "Название задачи",
+          category: "Research",
+          categoryClass: "_green",
+          date: "30.10.23",
+        },
+      ],
     },
     {
       title: "Тестирование",
       cards: [
-        { title: "Название задачи", category: "Research", categoryClass: "_green", date: "30.10.23" }
-      ]
+        {
+          title: "Название задачи",
+          category: "Research",
+          categoryClass: "_green",
+          date: "30.10.23",
+        },
+      ],
     },
     {
       title: "Готово",
       cards: [
-        { title: "Название задачи", category: "Research", categoryClass: "_green", date: "30.10.23" }
-      ]
-    }
+        {
+          title: "Название задачи",
+          category: "Research",
+          categoryClass: "_green",
+          date: "30.10.23",
+        },
+      ],
+    },
   ];
 
   return (

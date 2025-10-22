@@ -1,4 +1,4 @@
-import Card from '../Card/Card'
+import Card from "../Card/Card";
 
 function Column({ title, cards = [] }) {
   return (
