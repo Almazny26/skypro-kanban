@@ -3,9 +3,10 @@ function Card({
   category = "Web Design",
   categoryClass = "_orange",
   date = "30.10.23",
+  delayMs = 0,
 }) {
   return (
-    <div className="cards__item">
+    <div className="cards__item" style={{ animationDelay: `${delayMs}ms` }}>
       <div className="cards__card card">
         <div className="card__group">
           <div className={`card__theme ${categoryClass}`}>

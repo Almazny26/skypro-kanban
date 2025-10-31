@@ -27,12 +27,12 @@ ul li {
 
 @keyframes card-animation {
   0% {
-    height: 0;
     opacity: 0;
+    transform: translateY(-6px);
   }
   100% {
-    height: auto;
     opacity: 1;
+    transform: translateY(0);
   }
 }
 html,
@@ -85,6 +85,37 @@ body {
 .pop-new-card:target,
 .pop-browse:target {
   display: block;
+}
+
+@keyframes pop-user-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop-modal-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop-backdrop-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 ._orange {
@@ -300,6 +331,9 @@ body {
   justify-content: center;
   background: rgba(0, 0, 0, 0.4);
 }
+.pop-new-card:target .pop-new-card__container {
+  animation: pop-backdrop-fade 500ms ease both;
+}
 .pop-new-card__block {
   display: block;
   margin: 0 auto;
@@ -310,6 +344,9 @@ body {
   border-radius: 10px;
   border: 0.7px solid #d4dbe5;
   position: relative;
+}
+.pop-new-card:target .pop-new-card__block {
+  animation: pop-modal-appear 500ms ease both;
 }
 .pop-new-card__content {
   display: block;
@@ -810,6 +847,13 @@ body {
   transform: translateX(-50%);
 }
 
+.header__pop-user-set._open {
+  animation-name: pop-user-appear;
+  animation-duration: 500ms;
+  animation-timing-function: ease;
+  animation-fill-mode: both;
+}
+
 .main {
   width: 100%;
   background-color: #eaeef6;
@@ -851,6 +895,18 @@ body {
   animation-name: card-animation;
   animation-duration: 500ms;
   animation-timing-function: linear;
+  animation-fill-mode: both;
+  overflow: hidden;
+}
+
+.loading {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a6be;
+  font-size: 16px;
 }
 .cards__card {
   width: 220px;

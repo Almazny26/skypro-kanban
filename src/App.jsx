@@ -4,7 +4,6 @@ import Main from "./components/Main/Main";
 import PopExit from "./components/PopExit/PopExit";
 import PopNewCard from "./components/PopNewCard/PopNewCard";
 import PopBrowse from "./components/PopBrowse/PopBrowse";
-import PopUser from "./components/PopUser/PopUser";
 
 function App() {
   return (
@@ -13,7 +12,7 @@ function App() {
       <PopExit />
       <PopNewCard />
       <PopBrowse />
-      <PopUser />
+      {/** попап пользователя теперь управляется через Header */}
       {/* pop-up end*/}
 
       <Header />

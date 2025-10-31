@@ -1,4 +1,8 @@
+import { useState } from "react";
+
 function Header() {
+  const [isUserOpen, setIsUserOpen] = useState(false);
+
   return (
     <header className="header">
       <div className="container">
@@ -17,12 +21,20 @@ function Header() {
             <button className="header__btn-main-new _hover01" id="btnMainNew">
               <a href="#popNewCard">Создать новую задачу</a>
             </button>
-            <a href="#user-set-target" className="header__user _hover02">
+            <button
+              type="button"
+              className="header__user _hover02"
+              style={{ background: "transparent", border: "none", padding: 0 }}
+              onClick={() => setIsUserOpen((v) => !v)}
+            >
               Ivan Ivanov
-            </a>
+            </button>
             <div
-              className="header__pop-user-set pop-user-set"
+              className={`header__pop-user-set pop-user-set ${
+                isUserOpen ? "_open" : ""
+              }`}
               id="user-set-target"
+              style={{ display: isUserOpen ? "block" : "none" }}
             >
               {/* <a href="">x</a> */}
               <p className="pop-user-set__name">Ivan Ivanov</p>

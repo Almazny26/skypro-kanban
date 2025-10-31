@@ -8,7 +8,7 @@ function Column({ title, cards = [] }) {
       </div>
       <div className="cards">
         {cards.map((card, index) => (
-          <Card key={index} {...card} />
+          <Card key={card.id} delayMs={card.delayMs ?? index * 120} {...card} />
         ))}
       </div>
     </div>
