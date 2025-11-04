@@ -1,3 +1,14 @@
+import {
+  CardItem,
+  CardStyled,
+  CardGroup,
+  CardBtn,
+  CardContent,
+  CardTitle,
+  CardDate,
+  cardThemes,
+} from "./Card.styled";
+
 function Card({
   title = "Название задачи",
   category = "Web Design",
@@ -5,26 +16,28 @@ function Card({
   date = "30.10.23",
   delayMs = 0,
 }) {
+  const ThemeComponent = cardThemes[categoryClass] || cardThemes._gray;
+
   return (
-    <div className="cards__item" style={{ animationDelay: `${delayMs}ms` }}>
-      <div className="cards__card card">
-        <div className="card__group">
-          <div className={`card__theme ${categoryClass}`}>
-            <p className={categoryClass}>{category}</p>
-          </div>
+    <CardItem $delayMs={delayMs}>
+      <CardStyled>
+        <CardGroup>
+          <ThemeComponent>
+            <p>{category}</p>
+          </ThemeComponent>
           <a href="#popBrowse" target="_self">
-            <div className="card__btn">
+            <CardBtn>
               <div></div>
               <div></div>
               <div></div>
-            </div>
+            </CardBtn>
           </a>
-        </div>
-        <div className="card__content">
+        </CardGroup>
+        <CardContent>
           <a href="" target="_blank">
-            <h3 className="card__title">{title}</h3>
+            <CardTitle>{title}</CardTitle>
           </a>
-          <div className="card__date">
+          <CardDate>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="13"
@@ -54,10 +67,10 @@ function Card({
               </defs>
             </svg>
             <p>{date}</p>
-          </div>
-        </div>
-      </div>
-    </div>
+          </CardDate>
+        </CardContent>
+      </CardStyled>
+    </CardItem>
   );
 }
 
