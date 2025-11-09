@@ -1,13 +1,26 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  mode: "development",
+  plugins: [
+    react({
+      jsxRuntime: "automatic",
+    }),
+  ],
   server: {
     hmr: false,
   },
   build: {
     sourcemap: false,
+  },
+  optimizeDeps: {
+    force: true,
+    include: ["react", "react-dom", "styled-components"],
+    esbuildOptions: {
+      define: {
+        global: "globalThis",
+      },
+    },
   },
 });

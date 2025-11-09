@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Column from "../Column/Column";
 import { cardsData } from "../../data.js";
+import { Container } from "../../App.styled";
+import { MainStyled, MainBlock, MainContent, Loading } from "./Main.styled";
 
 function Main() {
   const [isLoading, setIsLoading] = useState(true);
@@ -53,12 +55,12 @@ function Main() {
   }, [cards]);
 
   return (
-    <main className="main">
-      <div className="container">
-        <div className="main__block">
-          <div className="main__content">
+    <MainStyled>
+      <Container>
+        <MainBlock>
+          <MainContent>
             {isLoading ? (
-              <div className="loading">Данные загружаются</div>
+              <Loading>Данные загружаются</Loading>
             ) : (
               columns.map((column) => (
                 <Column
@@ -68,10 +70,10 @@ function Main() {
                 />
               ))
             )}
-          </div>
-        </div>
-      </div>
-    </main>
+          </MainContent>
+        </MainBlock>
+      </Container>
+    </MainStyled>
   );
 }
 

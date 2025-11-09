@@ -4,20 +4,21 @@ import Main from "./components/Main/Main";
 import PopExit from "./components/PopExit/PopExit";
 import PopNewCard from "./components/PopNewCard/PopNewCard";
 import PopBrowse from "./components/PopBrowse/PopBrowse";
+import { GlobalStyle, Wrapper } from "./App.styled";
 
 function App() {
   return (
-    <div className="wrapper">
-      {/* pop-up start*/}
-      <PopExit />
-      <PopNewCard />
-      <PopBrowse />
-      {/** попап пользователя теперь управляется через Header */}
-      {/* pop-up end*/}
+    <>
+      <GlobalStyle />
+      <Wrapper>
+        <PopExit />
+        <PopNewCard />
+        <PopBrowse />
 
-      <Header />
-      <Main />
-    </div>
+        <Header />
+        <Main />
+      </Wrapper>
+    </>
   );
 }
 
