@@ -1,25 +1,8 @@
-import "./App.css";
-import Header from "./components/Header/Header";
-import Main from "./components/Main/Main";
-import PopExit from "./components/PopExit/PopExit";
-import PopNewCard from "./components/PopNewCard/PopNewCard";
-import PopBrowse from "./components/PopBrowse/PopBrowse";
-import { GlobalStyle, Wrapper } from "./App.styled";
+import AppRoutes from "./AppRoutes";
 
+// просто обертка, вся логика в AppRoutes
 function App() {
-  return (
-    <>
-      <GlobalStyle />
-      <Wrapper>
-        <PopExit />
-        <PopNewCard />
-        <PopBrowse />
-
-        <Header />
-        <Main />
-      </Wrapper>
-    </>
-  );
+  return <AppRoutes />;
 }
 
 export default App;

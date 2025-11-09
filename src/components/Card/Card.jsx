@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   CardItem,
   CardStyled,
@@ -9,13 +10,17 @@ import {
   cardThemes,
 } from "./Card.styled";
 
+// компонент карточки
+// при клике переходит на /card/:id
 function Card({
+  id,
   title = "Название задачи",
   category = "Web Design",
   categoryClass = "_orange",
   date = "30.10.23",
   delayMs = 0,
 }) {
+  // выбираем тему по categoryClass
   const ThemeComponent = cardThemes[categoryClass] || cardThemes._gray;
 
   return (
@@ -25,18 +30,20 @@ function Card({
           <ThemeComponent>
             <p>{category}</p>
           </ThemeComponent>
-          <a href="#popBrowse" target="_self">
+          {/* ссылка на страницу карточки */}
+          <Link to={`/card/${id}`}>
             <CardBtn>
               <div></div>
               <div></div>
               <div></div>
             </CardBtn>
-          </a>
+          </Link>
         </CardGroup>
         <CardContent>
-          <a href="" target="_blank">
+          {/* название тоже ссылка */}
+          <Link to={`/card/${id}`}>
             <CardTitle>{title}</CardTitle>
-          </a>
+          </Link>
           <CardDate>
             <svg
               xmlns="http://www.w3.org/2000/svg"
