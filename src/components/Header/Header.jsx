@@ -36,12 +36,9 @@ function Header() {
           </Logo>
           <Nav>
             <ButtonMainNew id="btnMainNew">
-              <Link to="/new-card">Создать новую задачу</Link>
+              <a href="#popNewCard">Создать новую задачу</a>
             </ButtonMainNew>
-            <UserButton
-              type="button"
-              onClick={() => setIsUserOpen((v) => !v)}
-            >
+            <UserButton type="button" onClick={() => setIsUserOpen((v) => !v)}>
               Ivan Ivanov
             </UserButton>
             {/* меню показывается когда isUserOpen === true */}
@@ -53,7 +50,7 @@ function Header() {
                 <input type="checkbox" className="checkbox" name="checkbox" />
               </PopUserTheme>
               <PopUserButton type="button">
-                <Link to="/exit">Выйти</Link>
+                <a href="#popExit">Выйти</a>
               </PopUserButton>
             </PopUserSet>
           </Nav>

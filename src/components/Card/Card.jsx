@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import {
   CardItem,
   CardStyled,
@@ -11,9 +10,9 @@ import {
 } from "./Card.styled";
 
 // компонент карточки
-// при клике переходит на /card/:id
+// при клике открывает модальное окно просмотра карточки
 function Card({
-  id,
+  id: _id, // id карточки, может использоваться для модального окна
   title = "Название задачи",
   category = "Web Design",
   categoryClass = "_orange",
@@ -25,25 +24,25 @@ function Card({
 
   return (
     <CardItem $delayMs={delayMs}>
-      <CardStyled>
+      <CardStyled data-card-id={_id}>
         <CardGroup>
           <ThemeComponent>
             <p>{category}</p>
           </ThemeComponent>
-          {/* ссылка на страницу карточки */}
-          <Link to={`/card/${id}`}>
+          {/* ссылка на модальное окно просмотра карточки */}
+          <a href="#popBrowse">
             <CardBtn>
               <div></div>
               <div></div>
               <div></div>
             </CardBtn>
-          </Link>
+          </a>
         </CardGroup>
         <CardContent>
-          {/* название тоже ссылка */}
-          <Link to={`/card/${id}`}>
+          {/* название тоже ссылка на модальное окно */}
+          <a href="#popBrowse">
             <CardTitle>{title}</CardTitle>
-          </Link>
+          </a>
           <CardDate>
             <svg
               xmlns="http://www.w3.org/2000/svg"

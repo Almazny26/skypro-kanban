@@ -3,9 +3,6 @@ import { useState } from "react";
 import MainPage from "./pages/MainPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
-import CardPage from "./pages/CardPage";
-import NewCardPage from "./pages/NewCardPage";
-import ExitPage from "./pages/ExitPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -37,39 +34,12 @@ function AppRoutes() {
 
         {/* защищенные страницы - нужна авторизация */}
         {/* ProtectedRoute проверяет isAuth, если false - редирект на /login */}
+        {/* модальные окна (новая задача, просмотр карточки, выход) находятся в MainPage */}
         <Route
           path="/"
           element={
             <ProtectedRoute isAuth={isAuth}>
-              <MainPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* :id - это параметр из url, можно получить через useParams */}
-        <Route
-          path="/card/:id"
-          element={
-            <ProtectedRoute isAuth={isAuth}>
-              <CardPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/new-card"
-          element={
-            <ProtectedRoute isAuth={isAuth}>
-              <NewCardPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/exit"
-          element={
-            <ProtectedRoute isAuth={isAuth}>
-              <ExitPage onExit={handleLogout} />
+              <MainPage onLogout={handleLogout} />
             </ProtectedRoute>
           }
         />

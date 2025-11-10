@@ -5,7 +5,14 @@ function PopNewCard() {
         <div className="pop-new-card__block">
           <div className="pop-new-card__content">
             <h3 className="pop-new-card__ttl">Создание задачи</h3>
-            <a href="#" className="pop-new-card__close">
+            <a
+              href="#"
+              className="pop-new-card__close"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.hash = "";
+              }}
+            >
               &#10006;
             </a>
             <div className="pop-new-card__wrap">
@@ -165,4 +172,3 @@ function PopNewCard() {
 }
 
 export default PopNewCard;
-

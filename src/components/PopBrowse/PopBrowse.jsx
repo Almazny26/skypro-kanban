@@ -168,7 +168,15 @@ function PopBrowse() {
                 </button>
               </div>
               <button className="btn-browse__close _btn-bg _hover01">
-                <a href="#">Закрыть</a>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.hash = "";
+                  }}
+                >
+                  Закрыть
+                </a>
               </button>
             </div>
             <div className="pop-browse__btn-edit _hide">
@@ -187,7 +195,15 @@ function PopBrowse() {
                 </button>
               </div>
               <button className="btn-edit__close _btn-bg _hover01">
-                <a href="#">Закрыть</a>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.hash = "";
+                  }}
+                >
+                  Закрыть
+                </a>
               </button>
             </div>
           </div>

@@ -1,15 +1,34 @@
 .pop-user-set:target,
-.pop-exit:target {
-  pointer-events: auto;
-}
 .pop-exit:target,
-.pop-new-card:target {
-  pointer-events: auto;
-}
 .pop-new-card:target,
 .pop-browse:target {
-  display: block;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 320px !important;
+  min-height: 100vh !important;
+  z-index: 5 !important;
   pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+  overflow: visible;
+}
+.pop-new-card:target {
+  min-width: 375px !important;
+  z-index: 6 !important;
+}
+.pop-browse:target {
+  min-width: 375px !important;
+  z-index: 7 !important;
+}
+.pop-exit:target .pop-exit__container {
+  display: flex !important;
+}
+.pop-new-card:target .pop-new-card__container {
+  display: flex !important;
+}
+.pop-browse:target .pop-browse__container {
+  display: flex !important;
 }
 
 @keyframes pop-modal-appear {
@@ -69,16 +88,22 @@
 }
 
 .pop-exit {
-  display: none;
-  width: 100%;
-  height: 100%;
-  min-width: 320px;
-  min-height: 100vh;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 5;
+  z-index: -1;
   pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  overflow: hidden;
+}
+.pop-exit:not(:target) .pop-exit__container {
+  display: none !important;
 }
 .pop-exit__container {
   width: 100%;
@@ -167,16 +192,22 @@
 }
 
 .pop-new-card {
-  display: none;
-  width: 100%;
-  min-width: 375px;
-  height: 100%;
-  min-height: 100vh;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 6;
+  z-index: -1;
   pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  overflow: hidden;
+}
+.pop-new-card:not(:target) .pop-new-card__container {
+  display: none !important;
 }
 .pop-new-card__container {
   width: 100%;
@@ -440,16 +471,22 @@
 }
 
 .pop-browse {
-  display: none;
-  width: 100%;
-  height: 100%;
-  min-width: 375px;
-  min-height: 100vh;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 7;
+  z-index: -1;
   pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  overflow: hidden;
+}
+.pop-browse:not(:target) .pop-browse__container {
+  display: none !important;
 }
 .pop-browse__container {
   width: 100%;
