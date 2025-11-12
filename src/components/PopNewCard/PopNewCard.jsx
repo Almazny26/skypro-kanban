@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function PopNewCard() {
+  const navigate = useNavigate();
+
   return (
     <div className="pop-new-card" id="popNewCard">
       <div className="pop-new-card__container">
@@ -10,7 +14,7 @@ function PopNewCard() {
               className="pop-new-card__close"
               onClick={(e) => {
                 e.preventDefault();
-                window.location.hash = "";
+                navigate("/");
               }}
             >
               &#10006;

@@ -35,7 +35,7 @@ function PopExit({ onExit }) {
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    window.location.hash = "";
+                    navigate("/");
                   }}
                 >
                   Нет, остаться

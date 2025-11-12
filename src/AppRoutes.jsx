@@ -35,8 +35,36 @@ function AppRoutes() {
         {/* защищенные страницы - нужна авторизация */}
         {/* ProtectedRoute проверяет isAuth, если false - редирект на /login */}
         {/* модальные окна (новая задача, просмотр карточки, выход) находятся в MainPage */}
+        {/* роут для главной страницы */}
         <Route
           path="/"
+          element={
+            <ProtectedRoute isAuth={isAuth}>
+              <MainPage onLogout={handleLogout} />
+            </ProtectedRoute>
+          }
+        />
+        {/* роут для модального окна создания новой задачи */}
+        <Route
+          path="/new-card"
+          element={
+            <ProtectedRoute isAuth={isAuth}>
+              <MainPage onLogout={handleLogout} />
+            </ProtectedRoute>
+          }
+        />
+        {/* роут для модального окна просмотра карточки */}
+        <Route
+          path="/card/:id"
+          element={
+            <ProtectedRoute isAuth={isAuth}>
+              <MainPage onLogout={handleLogout} />
+            </ProtectedRoute>
+          }
+        />
+        {/* роут для модального окна выхода */}
+        <Route
+          path="/exit"
           element={
             <ProtectedRoute isAuth={isAuth}>
               <MainPage onLogout={handleLogout} />

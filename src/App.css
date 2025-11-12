@@ -1,3 +1,4 @@
+/* стили для модальных окон через :target (для обратной совместимости) */
 .pop-user-set:target,
 .pop-exit:target,
 .pop-new-card:target,
@@ -28,6 +29,42 @@
   display: flex !important;
 }
 .pop-browse:target .pop-browse__container {
+  display: flex !important;
+}
+
+/* стили для модальных окон при условном рендеринге (через роуты) */
+.pop-exit,
+.pop-new-card,
+.pop-browse {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 320px !important;
+  min-height: 100vh !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5 !important;
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+  overflow: visible;
+}
+.pop-new-card {
+  min-width: 375px !important;
+  z-index: 6 !important;
+}
+.pop-browse {
+  min-width: 375px !important;
+  z-index: 7 !important;
+}
+.pop-exit .pop-exit__container {
+  display: flex !important;
+}
+.pop-new-card .pop-new-card__container {
+  display: flex !important;
+}
+.pop-browse .pop-browse__container {
   display: flex !important;
 }
 
@@ -87,23 +124,19 @@
   color: #ffffff;
 }
 
-.pop-exit {
+/* базовые стили для pop-exit удалены, так как теперь используем условный рендеринг */
+/* старые стили скрытия оставлены только для обратной совместимости с :target */
+.pop-exit:not(:target):not(:has(.pop-exit__container)) {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
   min-width: 0 !important;
   min-height: 0 !important;
-  position: fixed;
-  top: 0;
-  left: 0;
   z-index: -1;
   pointer-events: none;
   visibility: hidden;
   opacity: 0;
   overflow: hidden;
-}
-.pop-exit:not(:target) .pop-exit__container {
-  display: none !important;
 }
 .pop-exit__container {
   width: 100%;
@@ -191,24 +224,7 @@
   justify-content: space-between;
 }
 
-.pop-new-card {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  pointer-events: none;
-  visibility: hidden;
-  opacity: 0;
-  overflow: hidden;
-}
-.pop-new-card:not(:target) .pop-new-card__container {
-  display: none !important;
-}
+/* базовые стили для pop-new-card удалены, так как теперь используем условный рендеринг */
 .pop-new-card__container {
   width: 100%;
   height: 100%;
@@ -470,24 +486,7 @@
   white-space: nowrap;
 }
 
-.pop-browse {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  pointer-events: none;
-  visibility: hidden;
-  opacity: 0;
-  overflow: hidden;
-}
-.pop-browse:not(:target) .pop-browse__container {
-  display: none !important;
-}
+/* базовые стили для pop-browse удалены, так как теперь используем условный рендеринг */
 .pop-browse__container {
   width: 100%;
   height: 100%;

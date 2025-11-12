@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function PopBrowse() {
+  const navigate = useNavigate();
+
   return (
     <div className="pop-browse" id="popBrowse">
       <div className="pop-browse__container">
@@ -172,7 +176,7 @@ function PopBrowse() {
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    window.location.hash = "";
+                    navigate("/");
                   }}
                 >
                   Закрыть
@@ -199,7 +203,7 @@ function PopBrowse() {
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    window.location.hash = "";
+                    navigate("/");
                   }}
                 >
                   Закрыть

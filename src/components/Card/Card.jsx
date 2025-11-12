@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   CardItem,
   CardStyled,
@@ -30,19 +31,19 @@ function Card({
             <p>{category}</p>
           </ThemeComponent>
           {/* ссылка на модальное окно просмотра карточки */}
-          <a href="#popBrowse">
+          <Link to={`/card/${_id}`}>
             <CardBtn>
               <div></div>
               <div></div>
               <div></div>
             </CardBtn>
-          </a>
+          </Link>
         </CardGroup>
         <CardContent>
           {/* название тоже ссылка на модальное окно */}
-          <a href="#popBrowse">
+          <Link to={`/card/${_id}`}>
             <CardTitle>{title}</CardTitle>
-          </a>
+          </Link>
           <CardDate>
             <svg
               xmlns="http://www.w3.org/2000/svg"

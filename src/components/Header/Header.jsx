@@ -36,7 +36,7 @@ function Header() {
           </Logo>
           <Nav>
             <ButtonMainNew id="btnMainNew">
-              <a href="#popNewCard">Создать новую задачу</a>
+              <Link to="/new-card">Создать новую задачу</Link>
             </ButtonMainNew>
             <UserButton type="button" onClick={() => setIsUserOpen((v) => !v)}>
               Ivan Ivanov
@@ -49,9 +49,9 @@ function Header() {
                 <p>Темная тема</p>
                 <input type="checkbox" className="checkbox" name="checkbox" />
               </PopUserTheme>
-              <PopUserButton type="button">
-                <a href="#popExit">Выйти</a>
-              </PopUserButton>
+                  <PopUserButton type="button">
+                    <Link to="/exit">Выйти</Link>
+                  </PopUserButton>
             </PopUserSet>
           </Nav>
         </HeaderBlock>
