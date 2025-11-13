@@ -1,7 +1,54 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { createTask } from "../../services/tasksApi";
 
-function PopNewCard() {
+function PopNewCard({ onTaskCreated }) {
   const navigate = useNavigate();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [topic, setTopic] = useState("Web Design");
+  const [date, setDate] = useState(new Date().toISOString());
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const taskData = {
+        title: title || "Новая задача",
+        topic: topic || "Research",
+        status: "Без статуса",
+        description: description || "",
+        date: date || new Date().toISOString(),
+      };
+
+      await createTask(taskData);
+      // Обновляем список задач без перезагрузки страницы
+      if (onTaskCreated) {
+        onTaskCreated();
+      }
+      navigate("/");
+    } catch (err) {
+      console.error("Ошибка при создании задачи:", err);
+      if (err.status === 400) {
+        setError("Неверные данные задачи");
+      } else if (err.status === 401) {
+        setError("Необходима авторизация");
+        navigate("/login");
+      } else {
+        setError(err.message || "Произошла ошибка при создании задачи");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleTopicClick = (selectedTopic) => {
+    setTopic(selectedTopic);
+  };
 
   return (
     <div className="pop-new-card" id="popNewCard">
@@ -35,6 +82,8 @@ function PopNewCard() {
                     name="name"
                     id="formTitle"
                     placeholder="Введите название задачи..."
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                     autoFocus
                   />
                 </div>
@@ -47,6 +96,8 @@ function PopNewCard() {
                     name="text"
                     id="textArea"
                     placeholder="Введите описание задачи..."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                   ></textarea>
                 </div>
               </form>
@@ -154,20 +205,48 @@ function PopNewCard() {
             <div className="pop-new-card__categories categories">
               <p className="categories__p subttl">Категория</p>
               <div className="categories__themes">
-                <div className="categories__theme _orange _active-category">
+                <div
+                  className={`categories__theme _orange ${
+                    topic === "Web Design" ? "_active-category" : ""
+                  }`}
+                  onClick={() => handleTopicClick("Web Design")}
+                  style={{ cursor: "pointer" }}
+                >
                   <p className="_orange">Web Design</p>
                 </div>
-                <div className="categories__theme _green">
+                <div
+                  className={`categories__theme _green ${
+                    topic === "Research" ? "_active-category" : ""
+                  }`}
+                  onClick={() => handleTopicClick("Research")}
+                  style={{ cursor: "pointer" }}
+                >
                   <p className="_green">Research</p>
                 </div>
-                <div className="categories__theme _purple">
+                <div
+                  className={`categories__theme _purple ${
+                    topic === "Copywriting" ? "_active-category" : ""
+                  }`}
+                  onClick={() => handleTopicClick("Copywriting")}
+                  style={{ cursor: "pointer" }}
+                >
                   <p className="_purple">Copywriting</p>
                 </div>
               </div>
             </div>
-            <button className="form-new__create _hover01" id="btnCreate">
-              Создать задачу
+            <button
+              className="form-new__create _hover01"
+              id="btnCreate"
+              onClick={handleCreate}
+              disabled={isLoading}
+            >
+              {isLoading ? "Создание..." : "Создать задачу"}
             </button>
+            {error && (
+              <div style={{ color: "#ff0000", marginTop: "10px", textAlign: "center" }}>
+                {error}
+              </div>
+            )}
           </div>
         </div>
       </div>

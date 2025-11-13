@@ -1,4 +1,5 @@
 import { useLocation, useParams } from "react-router-dom";
+import { useState } from "react";
 import Header from "../components/Header/Header";
 import Main from "../components/Main/Main";
 import PopExit from "../components/PopExit/PopExit";
@@ -11,6 +12,12 @@ import { GlobalStyle, Wrapper } from "../App.styled";
 function MainPage({ onLogout }) {
   const location = useLocation();
   const { id } = useParams(); // получаем id карточки из роута /card/:id
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // функция для обновления списка задач
+  const refreshTasks = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
 
   // определяем, какое модальное окно показывать на основе текущего роута
   const showNewCard = location.pathname === "/new-card";
@@ -23,11 +30,11 @@ function MainPage({ onLogout }) {
       <Wrapper>
         {/* модальные окна - показываются условно на основе роута */}
         {showExit && <PopExit onExit={onLogout} />}
-        {showNewCard && <PopNewCard />}
-        {showCard && <PopBrowse cardId={id} />}
+        {showNewCard && <PopNewCard onTaskCreated={refreshTasks} />}
+        {showCard && <PopBrowse cardId={id} onTaskUpdated={refreshTasks} />}
 
         <Header />
-        <Main />
+        <Main refreshKey={refreshKey} />
       </Wrapper>
     </>
   );

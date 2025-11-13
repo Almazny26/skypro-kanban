@@ -4,6 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 // Импортируем глобальные стили
 import { GlobalStyle } from "../App.styled";
+// Импортируем useState для управления состоянием
+import { useState } from "react";
+// Импортируем API для авторизации
+import { loginUser } from "../services/userApi";
 
 const Wrapper = styled.div`
   max-width: 100%;
@@ -77,29 +81,6 @@ const ModalInput = styled.input`
   }
 `;
 
-const ModalBtnEnter = styled.button`
-  width: 100%;
-  height: 52px;
-  background-color: #580ea2;
-  border-radius: 6px;
-  border: none;
-  margin-top: 20px;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 24px;
-  letter-spacing: -0.05px;
-  color: #ffffff;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #33399b;
-  }
-
-  a {
-    color: #ffffff;
-    text-decoration: none;
-  }
-`;
 
 const ModalFormGroup = styled.div`
   text-align: center;
@@ -128,17 +109,87 @@ const ModalFormGroup = styled.div`
   }
 `;
 
+const ErrorMessage = styled.div`
+  color: #ff0000;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+`;
+
+const ModalBtnEnter = styled.button`
+  width: 100%;
+  height: 52px;
+  background-color: #580ea2;
+  border-radius: 6px;
+  border: none;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.05px;
+  color: #ffffff;
+  transition: background-color 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #33399b;
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+
+  a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+`;
+
 // страница входа
 // onLogin - функция из AppRoutes, меняет isAuth на true
 function SignInPage({ onLogin }) {
   const navigate = useNavigate();
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // при отправке формы авторизуемся и переходим на главную
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // чтобы страница не перезагружалась
-    if (onLogin) {
-      onLogin(); // меняет isAuth на true
-      navigate("/"); // переход на главную
+    setError("");
+    
+    // Валидация полей
+    if (!login.trim()) {
+      setError("Введите логин");
+      return;
+    }
+    if (!password.trim()) {
+      setError("Введите пароль");
+      return;
+    }
+    
+    setIsLoading(true);
+
+    try {
+      await loginUser(login.trim(), password);
+      if (onLogin) {
+        onLogin(); // меняет isAuth на true
+        navigate("/"); // переход на главную
+      }
+    } catch (err) {
+      // Обрабатываем ошибки
+      console.error("Ошибка авторизации:", err);
+      if (err.status === 400) {
+        setError(err.message || "Неверный логин или пароль");
+      } else if (err.status === 0) {
+        setError(err.message || "Ошибка сети. Проверьте подключение к интернету.");
+      } else {
+        setError(err.message || "Произошла ошибка при авторизации");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -158,15 +209,22 @@ function SignInPage({ onLogin }) {
                   name="login"
                   id="formlogin"
                   placeholder="Эл. почта"
+                  value={login}
+                  onChange={(e) => setLogin(e.target.value)}
+                  required
                 />
                 <ModalInput
                   type="password"
                   name="password"
                   id="formpassword"
                   placeholder="Пароль"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
-                <ModalBtnEnter type="submit" id="btnEnter">
-                  Войти
+                {error && <ErrorMessage>{error}</ErrorMessage>}
+                <ModalBtnEnter type="submit" id="btnEnter" disabled={isLoading}>
+                  {isLoading ? "Вход..." : "Войти"}
                 </ModalBtnEnter>
                 <ModalFormGroup>
                   <p>Нужно зарегистрироваться?</p>

@@ -4,6 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 // Импортируем глобальные стили
 import { GlobalStyle } from "../App.styled";
+// Импортируем useState для управления состоянием
+import { useState } from "react";
+// Импортируем API для регистрации
+import { registerUser } from "../services/userApi";
 
 const Wrapper = styled.div`
   max-width: 100%;
@@ -77,29 +81,6 @@ const ModalInput = styled.input`
   }
 `;
 
-const ModalBtnSignupEnt = styled.button`
-  width: 100%;
-  height: 52px;
-  background-color: #580ea2;
-  border-radius: 6px;
-  border: none;
-  margin-top: 20px;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 24px;
-  letter-spacing: -0.05px;
-  color: #ffffff;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #33399b;
-  }
-
-  a {
-    color: #ffffff;
-    text-decoration: none;
-  }
-`;
 
 const ModalFormGroup = styled.div`
   text-align: center;
@@ -128,17 +109,92 @@ const ModalFormGroup = styled.div`
   }
 `;
 
+const ErrorMessage = styled.div`
+  color: #ff0000;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+`;
+
+const ModalBtnSignupEnt = styled.button`
+  width: 100%;
+  height: 52px;
+  background-color: #580ea2;
+  border-radius: 6px;
+  border: none;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.05px;
+  color: #ffffff;
+  transition: background-color 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #33399b;
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+
+  a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+`;
+
 // страница регистрации
 // после регистрации сразу авторизуемся
 function SignUpPage({ onLogin }) {
   const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // при отправке формы регистрируемся, авторизуемся и переходим на главную
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (onLogin) {
-      onLogin(); // меняет isAuth на true
-      navigate("/");
+    setError("");
+    
+    // Валидация полей
+    if (!login.trim()) {
+      setError("Введите логин");
+      return;
+    }
+    if (!name.trim()) {
+      setError("Введите имя");
+      return;
+    }
+    if (!password.trim()) {
+      setError("Введите пароль");
+      return;
+    }
+    
+    setIsLoading(true);
+
+    try {
+      await registerUser(login.trim(), name.trim(), password);
+      if (onLogin) {
+        onLogin(); // меняет isAuth на true
+        navigate("/");
+      }
+    } catch (err) {
+      // Обрабатываем ошибки
+      console.error("Ошибка регистрации:", err);
+      if (err.status === 400) {
+        setError(err.message || "Пользователь с таким логином уже существует");
+      } else if (err.status === 0) {
+        setError(err.message || "Ошибка сети. Проверьте подключение к интернету.");
+      } else {
+        setError(err.message || "Произошла ошибка при регистрации");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -158,21 +214,31 @@ function SignUpPage({ onLogin }) {
                   name="first-name"
                   id="first-name"
                   placeholder="Имя"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
                 />
                 <ModalInput
                   type="text"
                   name="login"
                   id="loginReg"
                   placeholder="Эл. почта"
+                  value={login}
+                  onChange={(e) => setLogin(e.target.value)}
+                  required
                 />
                 <ModalInput
                   type="password"
                   name="password"
                   id="passwordFirst"
                   placeholder="Пароль"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
-                <ModalBtnSignupEnt type="submit" id="SignUpEnter">
-                  Зарегистрироваться
+                {error && <ErrorMessage>{error}</ErrorMessage>}
+                <ModalBtnSignupEnt type="submit" id="SignUpEnter" disabled={isLoading}>
+                  {isLoading ? "Регистрация..." : "Зарегистрироваться"}
                 </ModalBtnSignupEnt>
                 <ModalFormGroup>
                   <p>
