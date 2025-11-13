@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function PopBrowse() {
+  const navigate = useNavigate();
+
   return (
     <div className="pop-browse" id="popBrowse">
       <div className="pop-browse__container">
@@ -168,7 +172,15 @@ function PopBrowse() {
                 </button>
               </div>
               <button className="btn-browse__close _btn-bg _hover01">
-                <a href="#">Закрыть</a>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/");
+                  }}
+                >
+                  Закрыть
+                </a>
               </button>
             </div>
             <div className="pop-browse__btn-edit _hide">
@@ -187,7 +199,15 @@ function PopBrowse() {
                 </button>
               </div>
               <button className="btn-edit__close _btn-bg _hover01">
-                <a href="#">Закрыть</a>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/");
+                  }}
+                >
+                  Закрыть
+                </a>
               </button>
             </div>
           </div>

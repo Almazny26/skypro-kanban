@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Container } from "../../App.styled";
 import {
   HeaderStyled,
@@ -14,6 +15,8 @@ import {
   PopUserButton,
 } from "./Header.styled";
 
+// шапка сайта
+// использует Link для навигации без перезагрузки
 function Header() {
   const [isUserOpen, setIsUserOpen] = useState(false);
 
@@ -22,25 +25,23 @@ function Header() {
       <Container>
         <HeaderBlock>
           <Logo className="_show _light">
-            <a href="" target="_self">
+            <Link to="/">
               <img src="/images/logo.png" alt="logo" />
-            </a>
+            </Link>
           </Logo>
           <Logo className="_dark">
-            <a href="" target="_self">
+            <Link to="/">
               <img src="/images/logo_dark.png" alt="logo" />
-            </a>
+            </Link>
           </Logo>
           <Nav>
             <ButtonMainNew id="btnMainNew">
-              <a href="#popNewCard">Создать новую задачу</a>
+              <Link to="/new-card">Создать новую задачу</Link>
             </ButtonMainNew>
-            <UserButton
-              type="button"
-              onClick={() => setIsUserOpen((v) => !v)}
-            >
+            <UserButton type="button" onClick={() => setIsUserOpen((v) => !v)}>
               Ivan Ivanov
             </UserButton>
+            {/* меню показывается когда isUserOpen === true */}
             <PopUserSet $isOpen={isUserOpen} id="user-set-target">
               <PopUserName>Ivan Ivanov</PopUserName>
               <PopUserMail>ivan.ivanov@gmail.com</PopUserMail>
@@ -48,9 +49,9 @@ function Header() {
                 <p>Темная тема</p>
                 <input type="checkbox" className="checkbox" name="checkbox" />
               </PopUserTheme>
-              <PopUserButton type="button">
-                <a href="#popExit">Выйти</a>
-              </PopUserButton>
+                  <PopUserButton type="button">
+                    <Link to="/exit">Выйти</Link>
+                  </PopUserButton>
             </PopUserSet>
           </Nav>
         </HeaderBlock>

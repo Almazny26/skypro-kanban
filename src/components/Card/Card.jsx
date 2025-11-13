@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   CardItem,
   CardStyled,
@@ -9,34 +10,40 @@ import {
   cardThemes,
 } from "./Card.styled";
 
+// компонент карточки
+// при клике открывает модальное окно просмотра карточки
 function Card({
+  id: _id, // id карточки, может использоваться для модального окна
   title = "Название задачи",
   category = "Web Design",
   categoryClass = "_orange",
   date = "30.10.23",
   delayMs = 0,
 }) {
+  // выбираем тему по categoryClass
   const ThemeComponent = cardThemes[categoryClass] || cardThemes._gray;
 
   return (
     <CardItem $delayMs={delayMs}>
-      <CardStyled>
+      <CardStyled data-card-id={_id}>
         <CardGroup>
           <ThemeComponent>
             <p>{category}</p>
           </ThemeComponent>
-          <a href="#popBrowse" target="_self">
+          {/* ссылка на модальное окно просмотра карточки */}
+          <Link to={`/card/${_id}`}>
             <CardBtn>
               <div></div>
               <div></div>
               <div></div>
             </CardBtn>
-          </a>
+          </Link>
         </CardGroup>
         <CardContent>
-          <a href="" target="_blank">
+          {/* название тоже ссылка на модальное окно */}
+          <Link to={`/card/${_id}`}>
             <CardTitle>{title}</CardTitle>
-          </a>
+          </Link>
           <CardDate>
             <svg
               xmlns="http://www.w3.org/2000/svg"
