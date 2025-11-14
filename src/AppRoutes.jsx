@@ -1,45 +1,20 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
 import MainPage from "./pages/MainPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { getToken, removeToken } from "./services/api";
 
 // главный компонент с роутингом
-// тут хранится состояние авторизации
+// состояние авторизации проверяется в ProtectedRoute через контекст
 function AppRoutes() {
-  // Проверяем наличие токена при инициализации
-  const [isAuth, setIsAuth] = useState(() => {
-    return !!getToken();
-  });
-
-  useEffect(() => {
-    // Проверяем токен при монтировании компонента
-    setIsAuth(!!getToken());
-  }, []);
-
-  // вызывается при входе или регистрации
-  const handleLogin = () => {
-    setIsAuth(true);
-  };
-
-  // вызывается при выходе
-  const handleLogout = () => {
-    removeToken();
-    setIsAuth(false);
-  };
 
   return (
     <Router>
       <Routes>
         {/* публичные страницы - доступны без авторизации */}
-        <Route path="/login" element={<SignInPage onLogin={handleLogin} />} />
-        <Route
-          path="/register"
-          element={<SignUpPage onLogin={handleLogin} />}
-        />
+        <Route path="/login" element={<SignInPage />} />
+        <Route path="/register" element={<SignUpPage />} />
 
         {/* защищенные страницы - нужна авторизация */}
         {/* ProtectedRoute проверяет isAuth, если false - редирект на /login */}
@@ -48,8 +23,8 @@ function AppRoutes() {
         <Route
           path="/"
           element={
-            <ProtectedRoute isAuth={isAuth}>
-              <MainPage onLogout={handleLogout} />
+            <ProtectedRoute>
+              <MainPage />
             </ProtectedRoute>
           }
         />
@@ -57,8 +32,8 @@ function AppRoutes() {
         <Route
           path="/new-card"
           element={
-            <ProtectedRoute isAuth={isAuth}>
-              <MainPage onLogout={handleLogout} />
+            <ProtectedRoute>
+              <MainPage />
             </ProtectedRoute>
           }
         />
@@ -66,8 +41,8 @@ function AppRoutes() {
         <Route
           path="/card/:id"
           element={
-            <ProtectedRoute isAuth={isAuth}>
-              <MainPage onLogout={handleLogout} />
+            <ProtectedRoute>
+              <MainPage />
             </ProtectedRoute>
           }
         />
@@ -75,8 +50,8 @@ function AppRoutes() {
         <Route
           path="/exit"
           element={
-            <ProtectedRoute isAuth={isAuth}>
-              <MainPage onLogout={handleLogout} />
+            <ProtectedRoute>
+              <MainPage />
             </ProtectedRoute>
           }
         />

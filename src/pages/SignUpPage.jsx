@@ -4,10 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 // Импортируем глобальные стили
 import { GlobalStyle } from "../App.styled";
-// Импортируем useState для управления состоянием
-import { useState } from "react";
+// Импортируем useState и useContext для управления состоянием
+import { useState, useContext } from "react";
 // Импортируем API для регистрации
 import { registerUser } from "../services/userApi";
+// Импортируем контекст авторизации
+import { AuthContext } from "../context/AuthContext";
 
 const Wrapper = styled.div`
   max-width: 100%;
@@ -148,10 +150,11 @@ const ModalBtnSignupEnt = styled.button`
 
 // страница регистрации
 // после регистрации сразу авторизуемся
-function SignUpPage({ onLogin }) {
+function SignUpPage() {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   const [name, setName] = useState("");
-  const [login, setLogin] = useState("");
+  const [loginValue, setLoginValue] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -162,7 +165,7 @@ function SignUpPage({ onLogin }) {
     setError("");
     
     // Валидация полей
-    if (!login.trim()) {
+    if (!loginValue.trim()) {
       setError("Введите логин");
       return;
     }
@@ -178,11 +181,9 @@ function SignUpPage({ onLogin }) {
     setIsLoading(true);
 
     try {
-      await registerUser(login.trim(), name.trim(), password);
-      if (onLogin) {
-        onLogin(); // меняет isAuth на true
-        navigate("/");
-      }
+      await registerUser(loginValue.trim(), name.trim(), password);
+      login(); // меняет isAuth на true через контекст
+      navigate("/");
     } catch (err) {
       // Обрабатываем ошибки
       console.error("Ошибка регистрации:", err);
@@ -223,8 +224,8 @@ function SignUpPage({ onLogin }) {
                   name="login"
                   id="loginReg"
                   placeholder="Эл. почта"
-                  value={login}
-                  onChange={(e) => setLogin(e.target.value)}
+                  value={loginValue}
+                  onChange={(e) => setLoginValue(e.target.value)}
                   required
                 />
                 <ModalInput

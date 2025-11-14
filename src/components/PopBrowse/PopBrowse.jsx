@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getTaskById, updateTask, deleteTask } from "../../services/tasksApi";
 import CalendarPicker from "../Calendar/CalendarPicker";
+import { TaskContext } from "../../context/TaskContext";
 
-function PopBrowse({ cardId, onTaskUpdated }) {
+function PopBrowse({ cardId }) {
+  const { refreshTasks } = useContext(TaskContext);
   const navigate = useNavigate();
   const [task, setTask] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -109,9 +111,7 @@ function PopBrowse({ cardId, onTaskUpdated }) {
       setIsEditing(false);
       await loadTask();
       // Обновляем список задач без перезагрузки страницы
-      if (onTaskUpdated) {
-        onTaskUpdated();
-      }
+      refreshTasks();
     } catch (err) {
       console.error("Ошибка при обновлении задачи:", err);
       if (err.status === 400) {
@@ -134,9 +134,7 @@ function PopBrowse({ cardId, onTaskUpdated }) {
       setError("");
       await deleteTask(cardId);
       // Обновляем список задач без перезагрузки страницы
-      if (onTaskUpdated) {
-        onTaskUpdated();
-      }
+      refreshTasks();
       navigate("/");
     } catch (err) {
       console.error("Ошибка при удалении задачи:", err);

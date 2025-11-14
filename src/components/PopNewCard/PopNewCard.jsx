@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { createTask } from "../../services/tasksApi";
 import CalendarPicker from "../Calendar/CalendarPicker";
+import { TaskContext } from "../../context/TaskContext";
 
-function PopNewCard({ onTaskCreated }) {
+function PopNewCard() {
+  const { refreshTasks } = useContext(TaskContext);
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -49,9 +51,7 @@ function PopNewCard({ onTaskCreated }) {
 
       await createTask(taskData);
       // Обновляем список задач без перезагрузки страницы
-      if (onTaskCreated) {
-        onTaskCreated();
-      }
+      refreshTasks();
       navigate("/");
     } catch (err) {
       console.error("Ошибка при создании задачи:", err);
