@@ -1,0 +1,27 @@
+/* Стили для календаря - используем дизайн из макета */
+
+.calendar-view {
+  padding: 16px 0;
+}
+
+.calendar__period {
+  margin-top: 12px;
+  padding: 0 7px;
+}
+
+.calendar__p {
+  font-size: 10px;
+  color: #94a6be;
+  margin: 0;
+  line-height: 1;
+}
+
+.calendar__p span {
+  color: #000000;
+}
+
+.date-control {
+  font-weight: 400;
+  color: #000;
+}
+
