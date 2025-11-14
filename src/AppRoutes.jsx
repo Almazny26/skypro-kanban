@@ -1,16 +1,24 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MainPage from "./pages/MainPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { getToken, removeToken } from "./services/api";
 
 // главный компонент с роутингом
 // тут хранится состояние авторизации
 function AppRoutes() {
-  // false = не авторизован, true = авторизован
-  const [isAuth, setIsAuth] = useState(false);
+  // Проверяем наличие токена при инициализации
+  const [isAuth, setIsAuth] = useState(() => {
+    return !!getToken();
+  });
+
+  useEffect(() => {
+    // Проверяем токен при монтировании компонента
+    setIsAuth(!!getToken());
+  }, []);
 
   // вызывается при входе или регистрации
   const handleLogin = () => {
@@ -19,6 +27,7 @@ function AppRoutes() {
 
   // вызывается при выходе
   const handleLogout = () => {
+    removeToken();
     setIsAuth(false);
   };
 

@@ -1,20 +1,51 @@
 import { useEffect, useMemo, useState } from "react";
 import Column from "../Column/Column";
-import { cardsData } from "../../data.js";
 import { Container } from "../../App.styled";
 import { MainStyled, MainBlock, MainContent, Loading } from "./Main.styled";
+import { getTasks } from "../../services/tasksApi";
 
-function Main() {
+function Main({ refreshKey = 0 }) {
   const [isLoading, setIsLoading] = useState(true);
   const [cards, setCards] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const timerId = setTimeout(() => {
-      setCards(cardsData);
-      setIsLoading(false);
-    }, 1000);
-    return () => clearTimeout(timerId);
-  }, []);
+    const loadTasks = async () => {
+      try {
+        setIsLoading(true);
+        setError("");
+        const tasks = await getTasks();
+        // Преобразуем задачи из API в формат, который ожидает компонент
+        const formattedTasks = tasks.map((task) => ({
+          id: task._id,
+          title: task.title,
+          topic: task.topic,
+          date: new Date(task.date).toLocaleDateString("ru-RU", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+          }),
+          status: task.status,
+          description: task.description || "",
+        }));
+        setCards(formattedTasks);
+      } catch (err) {
+        console.error("Ошибка при загрузке задач:", err);
+        if (err.status === 401) {
+          setError("Необходима авторизация. Пожалуйста, войдите в систему.");
+        } else if (err.status === 400) {
+          setError("Неверный запрос. Проверьте данные.");
+        } else {
+          setError(err.message || "Не удалось загрузить задачи");
+        }
+        setCards([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTasks();
+  }, [refreshKey]); // Перезагружаем при изменении refreshKey
 
   const columns = useMemo(() => {
     const statusTitles = [
@@ -61,6 +92,8 @@ function Main() {
           <MainContent>
             {isLoading ? (
               <Loading>Данные загружаются</Loading>
+            ) : error ? (
+              <Loading>{error}</Loading>
             ) : (
               columns.map((column) => (
                 <Column
