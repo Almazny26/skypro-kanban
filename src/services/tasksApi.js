@@ -31,7 +31,9 @@ export const updateTask = async (id, taskData) => {
     method: "PUT",
     body: JSON.stringify(taskData),
   });
-  return response.tasks || [];
+  // API может вернуть пустой ответ или объект с tasks
+  // Если ответ пустой, считаем операцию успешной
+  return response.tasks || response || [];
 };
 
 // Удалить задачу

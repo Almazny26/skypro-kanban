@@ -5,7 +5,7 @@ import CalendarPicker from "../Calendar/CalendarPicker";
 import { TaskContext } from "../../context/TaskContext";
 
 function PopBrowse({ cardId }) {
-  const { refreshTasks } = useContext(TaskContext);
+  const { updateTask: updateTaskInContext, deleteTask: deleteTaskInContext } = useContext(TaskContext);
   const navigate = useNavigate();
   const [task, setTask] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -99,23 +99,67 @@ function PopBrowse({ cardId }) {
     }
 
     try {
+      // Используем дату в том же формате, в котором она пришла от API
+      // Если дата была изменена через календарь, она уже в формате ISO
+      let dateToSend = date;
+      if (date) {
+        // Если дата - это строка, которая не является ISO, преобразуем её
+        const dateObj = new Date(date);
+        if (!isNaN(dateObj.getTime())) {
+          // Используем ISO формат, как при создании задачи
+          dateToSend = dateObj.toISOString();
+        }
+      }
+
       const taskData = {
         title: title.trim(),
         topic: topic.trim(),
         status: status.trim(),
         description: description ? description.trim() : "",
-        date: date,
+        date: dateToSend,
       };
 
+      // Проверяем, что все обязательные поля не пустые
+      if (!taskData.title || !taskData.topic || !taskData.status || !taskData.date) {
+        setError("Все обязательные поля должны быть заполнены");
+        return;
+      }
+
+      console.log("Отправка данных задачи:", taskData);
       await updateTask(cardId, taskData);
+      
+      // Обновляем задачу в контексте без GET запроса
+      updateTaskInContext(cardId, {
+        title: taskData.title,
+        topic: taskData.topic,
+        status: taskData.status,
+        description: taskData.description,
+        date: taskData.date,
+      });
+      
+      // Обновляем локальное состояние задачи
+      setTask({
+        ...task,
+        title: taskData.title,
+        topic: taskData.topic,
+        status: taskData.status,
+        description: taskData.description,
+        date: taskData.date,
+      });
+      setTitle(taskData.title);
+      setDescription(taskData.description);
+      setTopic(taskData.topic);
+      setStatus(taskData.status);
+      setDate(taskData.date);
+      
       setIsEditing(false);
-      await loadTask();
-      // Обновляем список задач без перезагрузки страницы
-      refreshTasks();
     } catch (err) {
       console.error("Ошибка при обновлении задачи:", err);
+      console.error("Детали ошибки:", err.data);
       if (err.status === 400) {
-        setError("Неверные данные задачи");
+        // Показываем детальное сообщение об ошибке от API, если оно есть
+        const errorMessage = err.data?.error || err.data?.message || err.message || "Неверные данные задачи. Проверьте все поля.";
+        setError(errorMessage);
       } else if (err.status === 401) {
         setError("Необходима авторизация");
         navigate("/login");
@@ -133,8 +177,8 @@ function PopBrowse({ cardId }) {
     try {
       setError("");
       await deleteTask(cardId);
-      // Обновляем список задач без перезагрузки страницы
-      refreshTasks();
+      // Удаляем задачу из контекста без GET запроса
+      deleteTaskInContext(cardId);
       navigate("/");
     } catch (err) {
       console.error("Ошибка при удалении задачи:", err);
@@ -234,22 +278,22 @@ function PopBrowse({ cardId }) {
             <div className="pop-browse__status status">
               <p className="status__p subttl">Статус</p>
               {isEditing ? (
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  style={{
-                    padding: "8px",
-                    borderRadius: "4px",
-                    border: "1px solid #d0cece",
-                    fontSize: "16px",
-                  }}
-                >
+                <div className="status__themes">
                   {statusOptions.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
+                    <div
+                      key={opt}
+                      className={`status__theme ${
+                        status === opt ? "status__theme--selected" : ""
+                      }`}
+                      onClick={() => setStatus(opt)}
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    >
+                      <p>{opt}</p>
+                    </div>
                   ))}
-                </select>
+                </div>
               ) : (
                 <div className="status__themes">
                   {statusOptions.map((opt) => (

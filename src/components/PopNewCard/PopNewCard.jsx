@@ -5,7 +5,7 @@ import CalendarPicker from "../Calendar/CalendarPicker";
 import { TaskContext } from "../../context/TaskContext";
 
 function PopNewCard() {
-  const { refreshTasks } = useContext(TaskContext);
+  const { addTask } = useContext(TaskContext);
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -49,9 +49,22 @@ function PopNewCard() {
         date: date,
       };
 
-      await createTask(taskData);
-      // Обновляем список задач без перезагрузки страницы
-      refreshTasks();
+      const response = await createTask(taskData);
+      // Обновляем задачи в контексте без GET запроса
+      // API возвращает обновленный список задач после создания
+      if (response && response.length > 0) {
+        // Находим новую задачу в списке (та, которой не было в контексте)
+        // Ищем задачу с совпадающими данными
+        const newTask = response.find(
+          (task) =>
+            task.title === taskData.title &&
+            task.topic === taskData.topic &&
+            task.status === taskData.status
+        );
+        if (newTask) {
+          addTask(newTask);
+        }
+      }
       navigate("/");
     } catch (err) {
       console.error("Ошибка при создании задачи:", err);
