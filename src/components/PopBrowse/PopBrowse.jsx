@@ -5,7 +5,8 @@ import CalendarPicker from "../Calendar/CalendarPicker";
 import { TaskContext } from "../../context/TaskContext";
 
 function PopBrowse({ cardId }) {
-  const { updateTask: updateTaskInContext, deleteTask: deleteTaskInContext } = useContext(TaskContext);
+  const { updateTask: updateTaskInContext, deleteTask: deleteTaskInContext } =
+    useContext(TaskContext);
   const navigate = useNavigate();
   const [task, setTask] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -76,11 +77,15 @@ function PopBrowse({ cardId }) {
 
     // Валидация полей перед отправкой
     if (!title || !title.trim()) {
-      setError("Пожалуйста, заполните все обязательные поля. Введите название задачи.");
+      setError(
+        "Пожалуйста, заполните все обязательные поля. Введите название задачи."
+      );
       return;
     }
     if (!topic || !topic.trim()) {
-      setError("Пожалуйста, заполните все обязательные поля. Выберите категорию.");
+      setError(
+        "Пожалуйста, заполните все обязательные поля. Выберите категорию."
+      );
       return;
     }
     if (!status || !status.trim()) {
@@ -120,14 +125,19 @@ function PopBrowse({ cardId }) {
       };
 
       // Проверяем, что все обязательные поля не пустые
-      if (!taskData.title || !taskData.topic || !taskData.status || !taskData.date) {
+      if (
+        !taskData.title ||
+        !taskData.topic ||
+        !taskData.status ||
+        !taskData.date
+      ) {
         setError("Все обязательные поля должны быть заполнены");
         return;
       }
 
       console.log("Отправка данных задачи:", taskData);
       await updateTask(cardId, taskData);
-      
+
       // Обновляем задачу в контексте без GET запроса
       updateTaskInContext(cardId, {
         title: taskData.title,
@@ -136,7 +146,7 @@ function PopBrowse({ cardId }) {
         description: taskData.description,
         date: taskData.date,
       });
-      
+
       // Обновляем локальное состояние задачи
       setTask({
         ...task,
@@ -151,14 +161,18 @@ function PopBrowse({ cardId }) {
       setTopic(taskData.topic);
       setStatus(taskData.status);
       setDate(taskData.date);
-      
+
       setIsEditing(false);
     } catch (err) {
       console.error("Ошибка при обновлении задачи:", err);
       console.error("Детали ошибки:", err.data);
       if (err.status === 400) {
         // Показываем детальное сообщение об ошибке от API, если оно есть
-        const errorMessage = err.data?.error || err.data?.message || err.message || "Неверные данные задачи. Проверьте все поля.";
+        const errorMessage =
+          err.data?.error ||
+          err.data?.message ||
+          err.message ||
+          "Неверные данные задачи. Проверьте все поля.";
         setError(errorMessage);
       } else if (err.status === 401) {
         setError("Необходима авторизация");
@@ -251,7 +265,9 @@ function PopBrowse({ cardId }) {
                   }}
                 />
               ) : (
-                <h3 className="pop-browse__ttl">{task?.title || "Название задачи"}</h3>
+                <h3 className="pop-browse__ttl">
+                  {task?.title || "Название задачи"}
+                </h3>
               )}
               <div
                 className={`categories__theme theme-top ${
@@ -385,7 +401,13 @@ function PopBrowse({ cardId }) {
               )}
             </div>
             {error && (
-              <div style={{ color: "#ff0000", marginTop: "10px", textAlign: "center" }}>
+              <div
+                style={{
+                  color: "#ff0000",
+                  marginTop: "10px",
+                  textAlign: "center",
+                }}
+              >
                 {error}
               </div>
             )}
