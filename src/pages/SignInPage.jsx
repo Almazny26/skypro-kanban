@@ -4,10 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 // Импортируем глобальные стили
 import { GlobalStyle } from "../App.styled";
-// Импортируем useState для управления состоянием
-import { useState } from "react";
+// Импортируем useState и useContext для управления состоянием
+import { useState, useContext } from "react";
 // Импортируем API для авторизации
 import { loginUser } from "../services/userApi";
+// Импортируем контекст авторизации
+import { AuthContext } from "../context/AuthContext";
 
 const Wrapper = styled.div`
   max-width: 100%;
@@ -147,10 +149,11 @@ const ModalBtnEnter = styled.button`
 `;
 
 // страница входа
-// onLogin - функция из AppRoutes, меняет isAuth на true
-function SignInPage({ onLogin }) {
+// login - функция из AuthContext, меняет isAuth на true
+function SignInPage() {
   const navigate = useNavigate();
-  const [login, setLogin] = useState("");
+  const { login } = useContext(AuthContext);
+  const [loginValue, setLoginValue] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -161,7 +164,7 @@ function SignInPage({ onLogin }) {
     setError("");
     
     // Валидация полей
-    if (!login.trim()) {
+    if (!loginValue.trim()) {
       setError("Введите логин");
       return;
     }
@@ -173,11 +176,9 @@ function SignInPage({ onLogin }) {
     setIsLoading(true);
 
     try {
-      await loginUser(login.trim(), password);
-      if (onLogin) {
-        onLogin(); // меняет isAuth на true
-        navigate("/"); // переход на главную
-      }
+      await loginUser(loginValue.trim(), password);
+      login(); // меняет isAuth на true через контекст
+      navigate("/"); // переход на главную
     } catch (err) {
       // Обрабатываем ошибки
       console.error("Ошибка авторизации:", err);
@@ -209,8 +210,8 @@ function SignInPage({ onLogin }) {
                   name="login"
                   id="formlogin"
                   placeholder="Эл. почта"
-                  value={login}
-                  onChange={(e) => setLogin(e.target.value)}
+                  value={loginValue}
+                  onChange={(e) => setLoginValue(e.target.value)}
                   required
                 />
                 <ModalInput

@@ -1,5 +1,6 @@
 // Базовый URL API
-const API_BASE_URL = "https://wedev-api.sky.pro/api";
+// Можно переопределить через переменную окружения VITE_API_URL для локальной разработки
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://wedev-api.sky.pro/api";
 
 // Функция для получения токена из localStorage
 export const getToken = () => {
@@ -40,12 +41,13 @@ const request = async (url, options = {}) => {
   // Добавляем body только если он есть (не для GET запросов)
   if (options.body) {
     config.body = options.body;
+    // НЕ добавляем Content-Type, так как API не умеет работать с этим заголовком
   }
 
   try {
     const response = await fetch(`${API_BASE_URL}${url}`, config);
 
-    // Проверяем статус ответа
+    // Проверяем статус ответа (200-299 считаются успешными, включая 201)
     if (!response.ok) {
       let errorData = {};
       try {
@@ -76,7 +78,26 @@ const request = async (url, options = {}) => {
       };
     }
 
-    return await response.json();
+    // Проверяем, есть ли тело ответа перед парсингом JSON
+    try {
+      const text = await response.text();
+      if (text && text.trim()) {
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          console.error("Не удалось распарсить JSON ответ:", e);
+          // Если статус успешный, но JSON невалидный, возвращаем пустой объект
+          return {};
+        }
+      }
+    } catch (e) {
+      // Если не удалось прочитать тело ответа, но статус успешный, возвращаем пустой объект
+      console.warn("Не удалось прочитать тело ответа:", e);
+      return {};
+    }
+    
+    // Если ответ пустой, но статус успешный, возвращаем пустой объект
+    return {};
   } catch (error) {
     // Если это уже обработанная ошибка, пробрасываем дальше
     if (error.status) {

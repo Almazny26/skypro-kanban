@@ -616,11 +616,22 @@
   padding: 11px 14px 10px;
   margin-right: 7px;
   margin-bottom: 7px;
+  transition: all 0.2s ease;
 }
 .status__theme p {
   font-size: 14px;
   line-height: 1;
   letter-spacing: -0.14px;
+  color: #94a6be;
+}
+.status__theme--selected {
+  border-color: #94a6be;
+  border-width: 0.7px;
+  background-color: rgba(148, 166, 190, 0.1);
+}
+.status__theme--selected p {
+  color: #94a6be;
+  font-weight: 500;
 }
 
 ._btn-bor {

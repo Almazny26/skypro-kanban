@@ -1,51 +1,65 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useContext } from "react";
 import Column from "../Column/Column";
 import { Container } from "../../App.styled";
 import { MainStyled, MainBlock, MainContent, Loading } from "./Main.styled";
 import { getTasks } from "../../services/tasksApi";
+import { TaskContext } from "../../context/TaskContext";
 
-function Main({ refreshKey = 0 }) {
+function Main() {
+  const { tasks, setTasksList } = useContext(TaskContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [cards, setCards] = useState([]);
   const [error, setError] = useState("");
 
+  // Загружаем задачи только при первой загрузке компонента
   useEffect(() => {
     const loadTasks = async () => {
       try {
         setIsLoading(true);
         setError("");
-        const tasks = await getTasks();
-        // Преобразуем задачи из API в формат, который ожидает компонент
-        const formattedTasks = tasks.map((task) => ({
-          id: task._id,
-          title: task.title,
-          topic: task.topic,
-          date: new Date(task.date).toLocaleDateString("ru-RU", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit",
-          }),
-          status: task.status,
-          description: task.description || "",
-        }));
-        setCards(formattedTasks);
+        const tasksFromApi = await getTasks();
+        // Сохраняем задачи в контекст
+        setTasksList(tasksFromApi);
       } catch (err) {
         console.error("Ошибка при загрузке задач:", err);
         if (err.status === 401) {
           setError("Необходима авторизация. Пожалуйста, войдите в систему.");
         } else if (err.status === 400) {
           setError("Неверный запрос. Проверьте данные.");
+        } else if (err.status === 0) {
+          setError("Ошибка подключения к серверу. Проверьте интернет-соединение или попробуйте позже.");
         } else {
           setError(err.message || "Не удалось загрузить задачи");
         }
-        setCards([]);
+        setTasksList([]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadTasks();
-  }, [refreshKey]); // Перезагружаем при изменении refreshKey
+    // Загружаем задачи только если контекст пустой (первая загрузка)
+    if (tasks.length === 0) {
+      loadTasks();
+    } else {
+      setIsLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Загружаем только один раз при монтировании
+
+  // Преобразуем задачи из контекста в формат, который ожидает компонент
+  const cards = useMemo(() => {
+    return tasks.map((task) => ({
+      id: task._id,
+      title: task.title,
+      topic: task.topic,
+      date: new Date(task.date).toLocaleDateString("ru-RU", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+      }),
+      status: task.status,
+      description: task.description || "",
+    }));
+  }, [tasks]);
 
   const columns = useMemo(() => {
     const statusTitles = [

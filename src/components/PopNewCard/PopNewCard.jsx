@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { createTask } from "../../services/tasksApi";
 import CalendarPicker from "../Calendar/CalendarPicker";
+import { TaskContext } from "../../context/TaskContext";
 
-function PopNewCard({ onTaskCreated }) {
+function PopNewCard() {
+  const { addTask } = useContext(TaskContext);
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -47,10 +49,21 @@ function PopNewCard({ onTaskCreated }) {
         date: date,
       };
 
-      await createTask(taskData);
-      // Обновляем список задач без перезагрузки страницы
-      if (onTaskCreated) {
-        onTaskCreated();
+      const response = await createTask(taskData);
+      // Обновляем задачи в контексте без GET запроса
+      // API возвращает обновленный список задач после создания
+      if (response && response.length > 0) {
+        // Находим новую задачу в списке (та, которой не было в контексте)
+        // Ищем задачу с совпадающими данными
+        const newTask = response.find(
+          (task) =>
+            task.title === taskData.title &&
+            task.topic === taskData.topic &&
+            task.status === taskData.status
+        );
+        if (newTask) {
+          addTask(newTask);
+        }
       }
       navigate("/");
     } catch (err) {
