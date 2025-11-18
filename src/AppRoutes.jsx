@@ -16,7 +16,7 @@ function AppRoutes() {
         <Route path="/login" element={<SignInPage />} />
         <Route path="/register" element={<SignUpPage />} />
 
-        {/* Защищенные страницы - нужна авторизация */}
+        {/* Защищенные страницы-нужна авторизация */}
         {/* Модальные окна (новая задача, просмотр карточки, выход) рендерятся в MainPage */}
         <Route
           path="/"
