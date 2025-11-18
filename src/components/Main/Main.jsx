@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, useContext } from "react";
-import { DndContext, DragOverlay, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, DragOverlay, closestCenter, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import Column from "../Column/Column";
 import { Container } from "../../App.styled";
-import { MainStyled, MainBlock, MainContent, Loading, Spinner, EmptyState, SkeletonContainer } from "./Main.styled";
+import { MainStyled, MainBlock, MainContent, Loading, Spinner, EmptyState, SkeletonContainer, SkeletonColumn, SkeletonColumnTitle, SkeletonCards } from "./Main.styled";
 import { getTasks, updateTask } from "../../services/tasksApi";
 import { TaskContext } from "../../context/TaskContext";
 import { ThemeContext } from "../../context/ThemeContext";
@@ -23,7 +23,13 @@ function Main() {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 10,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 150,
+        tolerance: 8,
       },
     }),
     useSensor(KeyboardSensor, {
@@ -284,8 +290,8 @@ function Main() {
                   { title: "Тестирование", count: 2 },
                   { title: "Готово", count: 2 },
                 ].map((column, colIndex) => (
-                  <div key={column.title} style={{ width: "20%", margin: "0 auto", display: "block" }}>
-                    <div style={{ padding: "0 10px", margin: "15px 0" }}>
+                  <SkeletonColumn key={column.title}>
+                    <SkeletonColumnTitle>
                       <p style={{ 
                         color: theme?.textSecondary || "#94a6be", 
                         fontSize: "14px", 
@@ -295,8 +301,8 @@ function Main() {
                       }}>
                         {column.title}
                       </p>
-                    </div>
-                    <div style={{ width: "100%", display: "block", position: "relative" }}>
+                    </SkeletonColumnTitle>
+                    <SkeletonCards>
                       {Array.from({ length: column.count }).map((_, cardIndex) => {
                         // Вычисляю общий индекс для правильной задержки анимации скелетона
                         let totalIndex = 0;
@@ -309,8 +315,8 @@ function Main() {
                           <SkeletonCard key={cardIndex} delayMs={totalIndex * 120} />
                         );
                       })}
-                    </div>
-                  </div>
+                    </SkeletonCards>
+                  </SkeletonColumn>
                 ))}
               </SkeletonContainer>
             ) : error ? (

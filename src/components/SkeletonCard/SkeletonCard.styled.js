@@ -33,6 +33,25 @@ export const SkeletonCardStyled = styled.div`
       transform: translateY(0);
     }
   }
+
+  @media screen and (max-width: 1200px) {
+    flex-shrink: 0;
+    min-width: 220px;
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 200px;
+    height: 120px;
+    min-width: 200px;
+    padding: 12px 10px 15px;
+  }
+
+  @media screen and (max-width: 495px) {
+    width: 220px;
+    height: 130px;
+    min-width: 220px;
+    padding: 15px 13px 19px;
+  }
 `;
 
 export const SkeletonContent = styled.div`

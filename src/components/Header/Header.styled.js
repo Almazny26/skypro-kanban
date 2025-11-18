@@ -28,11 +28,25 @@ export const HeaderBlock = styled.div`
   top: 0;
   left: 0;
   padding: 0 10px;
+
+  @media screen and (max-width: 768px) {
+    padding: 0 5px;
+  }
+
+  @media screen and (max-width: 495px) {
+    height: 60px;
+  }
 `;
 
 export const Logo = styled.div`
   img {
     width: 85px;
+  }
+
+  @media screen and (max-width: 495px) {
+    img {
+      width: 70px;
+    }
   }
 `;
 
@@ -43,6 +57,12 @@ export const Nav = styled.nav`
   align-items: center;
   justify-content: center;
   position: relative;
+
+  @media screen and (max-width: 495px) {
+    max-width: auto;
+    flex: 1;
+    justify-content: flex-end;
+  }
 `;
 
 export const ButtonMainNew = styled.button`
@@ -65,6 +85,12 @@ export const ButtonMainNew = styled.button`
     color: #ffffff;
   }
 
+  @media screen and (max-width: 768px) {
+    width: 150px;
+    font-size: 13px;
+    margin-right: 10px;
+  }
+
   @media screen and (max-width: 495px) {
     z-index: 3;
     position: fixed;
@@ -75,6 +101,7 @@ export const ButtonMainNew = styled.button`
     height: 40px;
     border-radius: 4px;
     margin-right: 0;
+    font-size: 14px;
   }
 `;
 
@@ -120,7 +147,7 @@ export const PopUserSet = styled.div`
   top: 50px;
   right: 0;
   width: 213px;
-  height: 205px;
+  min-height: auto;
   border-radius: 10px;
   border: 0.7px solid ${(props) => props.theme.inputBorder || "rgba(148, 166, 190, 0.4)"};
   background: ${(props) => props.theme.cardBackground};
@@ -130,12 +157,29 @@ export const PopUserSet = styled.div`
   z-index: 10;
   transform: translateX(0);
   transition: background-color 0.3s ease, border-color 0.3s ease;
+  box-sizing: border-box;
 
   ${(props) =>
     props.$isOpen &&
     css`
       animation: ${popUserAppear} 500ms ease both;
     `}
+
+  @media screen and (max-width: 768px) {
+    width: 213px;
+    right: 0;
+    padding: 24px;
+  }
+
+  @media screen and (max-width: 495px) {
+    width: 213px;
+    max-width: calc(100vw - 32px);
+    right: 0;
+    left: auto;
+    padding: 20px;
+    min-height: auto;
+    top: 50px;
+  }
 `;
 
 export const PopUserName = styled.p`
@@ -146,6 +190,13 @@ export const PopUserName = styled.p`
   letter-spacing: -0.14px;
   margin-bottom: 4px;
   transition: color 0.3s ease;
+  word-break: break-word;
+  overflow-wrap: break-word;
+
+  @media screen and (max-width: 495px) {
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
 `;
 
 export const PopUserMail = styled.p`
@@ -156,25 +207,15 @@ export const PopUserMail = styled.p`
   margin-bottom: 10px;
   transition: color 0.3s ease;
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: break-word;
   max-width: 100%;
-  position: relative;
-  
-  /* Эффект "тумана" для длинных email - градиент справа */
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 50px;
-    height: 100%;
-    background: linear-gradient(
-      to right,
-      transparent 0%,
-      ${(props) => props.theme.cardBackground || "#ffffff"} 100%
-    );
-    pointer-events: none;
+
+  @media screen and (max-width: 495px) {
+    font-size: 14px;
+    margin-bottom: 10px;
+    word-break: break-word;
+    white-space: normal;
   }
 `;
 
@@ -183,6 +224,8 @@ export const PopUserTheme = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 30px;
+  width: 100%;
+  gap: 10px;
 
   p {
     color: ${(props) => props.theme.text};
@@ -190,18 +233,25 @@ export const PopUserTheme = styled.div`
     line-height: 21px;
     letter-spacing: -0.14px;
     transition: color 0.3s ease;
+    margin: 0;
+    flex: 1;
+    text-align: left;
   }
 
   input[type="checkbox"] {
     position: relative;
     width: 24px;
     height: 13px;
+    min-width: 24px;
     border-radius: 100px;
     background: #eaeef6;
     outline: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin: 0;
   }
 
   input[type="checkbox"]::before {
@@ -216,8 +266,34 @@ export const PopUserTheme = styled.div`
     transition: 0.5s;
   }
 
+  input:checked[type="checkbox"] {
+    background: #565eef;
+  }
+
   input:checked[type="checkbox"]::before {
     left: 12px;
+    background-color: #ffffff;
+  }
+
+  @media screen and (max-width: 495px) {
+    margin-bottom: 20px;
+    gap: 10px;
+    
+    p {
+      font-size: 14px;
+      line-height: 21px;
+    }
+
+    input[type="checkbox"] {
+      width: 24px;
+      height: 13px;
+      min-width: 24px;
+    }
+
+    input[type="checkbox"]::before {
+      width: 11px;
+      height: 11px;
+    }
   }
 `;
 

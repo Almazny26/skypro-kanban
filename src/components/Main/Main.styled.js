@@ -16,6 +16,14 @@ export const MainBlock = styled.div`
     margin: 0 auto;
     padding: 40px 0 64px;
   }
+
+  @media screen and (max-width: 768px) {
+    padding: 30px 0 50px;
+  }
+
+  @media screen and (max-width: 495px) {
+    padding: 20px 0 100px;
+  }
 `;
 
 export const MainContent = styled.div`
@@ -74,6 +82,87 @@ export const SkeletonContainer = styled.div`
 
   @media screen and (max-width: 1200px) {
     display: block;
+  }
+`;
+
+export const SkeletonColumn = styled.div`
+  width: 20%;
+  margin: 0 auto;
+  display: block;
+
+  @media screen and (max-width: 1200px) {
+    width: 100%;
+    margin: 0 auto 30px;
+    display: block;
+  }
+
+  @media screen and (max-width: 495px) {
+    margin-bottom: 20px;
+  }
+`;
+
+export const SkeletonColumnTitle = styled.div`
+  padding: 0 10px;
+  margin: 15px 0;
+
+  @media screen and (max-width: 1200px) {
+    padding: 0 16px;
+    margin: 12px 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    padding: 0 16px;
+    margin: 12px 0;
+  }
+
+  @media screen and (max-width: 495px) {
+    padding: 0 16px;
+    margin: 10px 0;
+  }
+`;
+
+export const SkeletonCards = styled.div`
+  width: 100%;
+  display: block;
+  position: relative;
+
+  @media screen and (max-width: 1200px) {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 10px;
+    padding: 0 16px 10px;
+    margin-left: -16px;
+    margin-right: -16px;
+    width: calc(100% + 32px);
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    touch-action: pan-x;
+    scrollbar-width: thin;
+    scrollbar-color: #94a6be transparent;
+    min-height: 150px;
+
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #94a6be;
+      border-radius: 3px;
+    }
+  }
+
+  @media screen and (max-width: 495px) {
+    gap: 8px;
+    padding: 0 16px 8px;
+    margin-left: -16px;
+    margin-right: -16px;
+    width: calc(100% + 32px);
   }
 `;
 

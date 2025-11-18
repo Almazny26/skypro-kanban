@@ -32,13 +32,7 @@ function Column({ id, title, cards = [], activeId, overId }) {
       <Cards 
         ref={setNodeRef}
         data-column-id={columnId}
-        style={{
-          minHeight: isOverColumn ? "200px" : "auto",
-          backgroundColor: isOverColumn ? "rgba(88, 14, 162, 0.05)" : "transparent",
-          borderRadius: isOverColumn ? "8px" : "0",
-          transition: "all 0.2s ease",
-          padding: isOverColumn ? "10px 0" : "0",
-        }}
+        $isOverColumn={isOverColumn}
       >
         <SortableContext 
           items={cardIds} 

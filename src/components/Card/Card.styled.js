@@ -18,6 +18,11 @@ export const CardItem = styled.div`
   animation-delay: ${(props) => props.$delayMs || 0}ms;
   position: relative;
   z-index: ${(props) => (props.$isDragging ? 1000 : 1)};
+
+  @media screen and (max-width: 1200px) {
+    flex-shrink: 0;
+    min-width: fit-content;
+  }
 `;
 
 export const CardStyled = styled.div`
@@ -39,12 +44,21 @@ export const CardStyled = styled.div`
   @media screen and (max-width: 1200px) {
     width: 220px;
     height: 130px;
-    background-color: ${(props) => props.theme?.cardBackground || "#ffffff"};
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: stretch;
+    min-width: 220px;
+    flex-shrink: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 200px;
+    height: 120px;
+    min-width: 200px;
+    padding: 12px 10px 15px;
+  }
+
+  @media screen and (max-width: 495px) {
+    width: 220px;
+    height: 130px;
+    min-width: 220px;
     padding: 15px 13px 19px;
   }
 `;
@@ -63,11 +77,35 @@ const BaseTheme = styled.div`
   height: 20px;
   padding: 5px 14px;
   border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  overflow: visible;
 
   p {
     font-size: 10px;
     font-weight: 600;
     line-height: 10px;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  @media screen and (max-width: 495px) {
+    padding: 5px 14px;
+    height: 20px;
+    
+    p {
+      font-size: 10px;
+      line-height: 10px;
+      display: block;
+      visibility: visible;
+      opacity: 1;
+    }
   }
 `;
 
@@ -80,6 +118,10 @@ export const CardThemeOrange = styled(BaseTheme)`
     const isDark = props.theme?.background === "#151419";
     return isDark ? "#FF6D00" : "#ff6d00";
   }};
+
+  p {
+    color: inherit;
+  }
 `;
 
 export const CardThemeGreen = styled(BaseTheme)`
@@ -91,6 +133,10 @@ export const CardThemeGreen = styled(BaseTheme)`
     const isDark = props.theme?.background === "#151419";
     return isDark ? "#00A86B" : "#06b16e";
   }};
+
+  p {
+    color: inherit;
+  }
 `;
 
 export const CardThemePurple = styled(BaseTheme)`
@@ -102,11 +148,19 @@ export const CardThemePurple = styled(BaseTheme)`
     const isDark = props.theme?.background === "#151419";
     return isDark ? "#7B2CBF" : "#9a48f1";
   }};
+
+  p {
+    color: inherit;
+  }
 `;
 
 export const CardThemeGray = styled(BaseTheme)`
   background: #94a6be;
   color: #ffffff;
+
+  p {
+    color: inherit;
+  }
 `;
 
 export const cardThemes = {

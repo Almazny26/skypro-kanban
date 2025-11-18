@@ -9,6 +9,13 @@ const SearchFilterContainer = styled.div`
 
   @media screen and (max-width: 768px) {
     flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  @media screen and (max-width: 495px) {
+    gap: 8px;
+    margin-bottom: 12px;
   }
 `;
 
@@ -32,6 +39,17 @@ const SearchInput = styled.input`
   &::placeholder {
     color: ${(props) => props.theme.textSecondary};
   }
+
+  @media screen and (max-width: 768px) {
+    min-width: 100%;
+    font-size: 15px;
+    padding: 12px 15px;
+  }
+
+  @media screen and (max-width: 495px) {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
 `;
 
 const ClearButton = styled.button`
@@ -47,6 +65,17 @@ const ClearButton = styled.button`
 
   &:hover {
     background-color: ${(props) => props.theme.primaryHover};
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    font-size: 15px;
+    padding: 12px 20px;
+  }
+
+  @media screen and (max-width: 495px) {
+    font-size: 14px;
+    padding: 10px 16px;
   }
 `;
 
