@@ -1,6 +1,6 @@
 import request from "./api";
 
-// Получить список задач
+// Получаю список всех задач с сервера
 export const getTasks = async () => {
   const response = await request("/kanban", {
     method: "GET",
@@ -8,7 +8,7 @@ export const getTasks = async () => {
   return response.tasks || [];
 };
 
-// Получить задачу по id
+// Получаю одну задачу по её id
 export const getTaskById = async (id) => {
   const response = await request(`/kanban/${id}`, {
     method: "GET",
@@ -16,7 +16,7 @@ export const getTaskById = async (id) => {
   return response.task;
 };
 
-// Создать новую задачу
+// Создаю новую задачу
 export const createTask = async (taskData) => {
   const response = await request("/kanban", {
     method: "POST",
@@ -25,18 +25,18 @@ export const createTask = async (taskData) => {
   return response.tasks || [];
 };
 
-// Обновить задачу
+// Обновляю существующую задачу
 export const updateTask = async (id, taskData) => {
   const response = await request(`/kanban/${id}`, {
     method: "PUT",
     body: JSON.stringify(taskData),
   });
-  // API может вернуть пустой ответ или объект с tasks
-  // Если ответ пустой, считаем операцию успешной
+  // API может вернуть пустой ответ или список задач
+  // Если ответ пустой, операция все равно считается успешной
   return response.tasks || response || [];
 };
 
-// Удалить задачу
+// Удаляю задачу
 export const deleteTask = async (id) => {
   const response = await request(`/kanban/${id}`, {
     method: "DELETE",

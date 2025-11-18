@@ -1,23 +1,40 @@
-// Базовый URL API
-// Можно переопределить через переменную окружения VITE_API_URL для локальной разработки
+// Базовый URL API - можно переопределить через .env файл
 const API_BASE_URL = import.meta.env.VITE_API_URL || "https://wedev-api.sky.pro/api";
 
-// Функция для получения токена из localStorage
+// Получаю токен из localStorage
 export const getToken = () => {
   return localStorage.getItem("token");
 };
 
-// Функция для сохранения токена в localStorage
+// Сохраняю токен в localStorage
 export const setToken = (token) => {
   localStorage.setItem("token", token);
 };
 
-// Функция для удаления токена из localStorage
+// Удаляю токен и данные пользователя из localStorage
 export const removeToken = () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userLogin");
 };
 
-// Базовая функция для выполнения запросов
+// Сохраняю имя и логин пользователя в localStorage
+export const setUserData = (name, login) => {
+  if (name) localStorage.setItem("userName", name);
+  if (login) localStorage.setItem("userLogin", login);
+};
+
+// Получаю имя пользователя из localStorage
+export const getUserName = () => {
+  return localStorage.getItem("userName");
+};
+
+// Получаю логин пользователя из localStorage
+export const getUserLogin = () => {
+  return localStorage.getItem("userLogin");
+};
+
+// Основная функция для выполнения запросов к API
 const request = async (url, options = {}) => {
   const token = getToken();
 
@@ -25,40 +42,38 @@ const request = async (url, options = {}) => {
     ...options.headers,
   };
 
-  // НЕ добавляем Content-Type, так как API не умеет работать с этим заголовком
+  // API не принимает Content-Type заголовок, поэтому не добавляю его
 
-  // Добавляем токен авторизации, если он есть
+  // Добавляю токен авторизации, если он есть
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  // Создаем конфигурацию запроса
+  // Формирую конфигурацию запроса
   const config = {
     method: options.method || "GET",
     headers,
   };
 
-  // Добавляем body только если он есть (не для GET запросов)
+  // Добавляю body только если он есть (для POST, PUT запросов)
   if (options.body) {
     config.body = options.body;
-    // НЕ добавляем Content-Type, так как API не умеет работать с этим заголовком
   }
 
-  try {
-    const response = await fetch(`${API_BASE_URL}${url}`, config);
+    try {
+      const response = await fetch(`${API_BASE_URL}${url}`, config);
 
-    // Проверяем статус ответа (200-299 считаются успешными, включая 201)
-    if (!response.ok) {
-      let errorData = {};
-      try {
-        const text = await response.text();
-        if (text) {
-          errorData = JSON.parse(text);
+      // Проверяю статус ответа - если не успешный, обрабатываю ошибку
+      if (!response.ok) {
+        let errorData = {};
+        try {
+          const text = await response.text();
+          if (text) {
+            errorData = JSON.parse(text);
+          }
+        } catch {
+          // Если не удалось распарсить JSON, оставляю пустой объект
         }
-      } catch (e) {
-        // Если не удалось распарсить JSON, оставляем пустой объект
-        console.error("Не удалось распарсить ответ ошибки:", e);
-      }
 
       const errorMessage =
         errorData.error ||
@@ -78,32 +93,30 @@ const request = async (url, options = {}) => {
       };
     }
 
-    // Проверяем, есть ли тело ответа перед парсингом JSON
+    // Парсю JSON ответ, если он есть
     try {
       const text = await response.text();
       if (text && text.trim()) {
         try {
           return JSON.parse(text);
-        } catch (e) {
-          console.error("Не удалось распарсить JSON ответ:", e);
-          // Если статус успешный, но JSON невалидный, возвращаем пустой объект
+        } catch {
+          // Если JSON невалидный, возвращаю пустой объект
           return {};
         }
       }
-    } catch (e) {
-      // Если не удалось прочитать тело ответа, но статус успешный, возвращаем пустой объект
-      console.warn("Не удалось прочитать тело ответа:", e);
+    } catch {
+      // Если не удалось прочитать ответ, возвращаю пустой объект
       return {};
     }
     
-    // Если ответ пустой, но статус успешный, возвращаем пустой объект
+    // Если ответ пустой, возвращаю пустой объект
     return {};
   } catch (error) {
-    // Если это уже обработанная ошибка, пробрасываем дальше
+    // Если это уже обработанная ошибка, пробрасываю её дальше
     if (error.status) {
       throw error;
     }
-    // Иначе это сетевая ошибка
+    // Иначе это сетевая ошибка (нет интернета, сервер недоступен и т.д.)
     throw {
       status: 0,
       message: "Ошибка сети. Проверьте подключение к интернету.",

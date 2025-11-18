@@ -801,3 +801,115 @@
     display: block;
   }
 }
+
+/* Темная тема для модальных окон */
+.dark-theme .pop-new-card__block,
+.dark-theme .pop-browse__block {
+  background-color: #20202C;
+  border: 0.7px solid #4E5566;
+}
+
+.dark-theme .pop-new-card__ttl,
+.dark-theme .pop-browse__ttl {
+  color: #FFFFFF;
+}
+
+.dark-theme .pop-new-card__close {
+  color: #94A6BE;
+}
+
+.dark-theme .pop-new-card__close:hover {
+  color: #FFFFFF;
+}
+
+.dark-theme .form-new__input,
+.dark-theme .form-new__area,
+.dark-theme .form-browse__input,
+.dark-theme .form-browse__area {
+  background-color: transparent;
+  border: 0.7px solid rgba(148, 166, 190, 0.4);
+  color: #FFFFFF;
+}
+
+.dark-theme .form-new__input::-moz-placeholder,
+.dark-theme .form-new__area::-moz-placeholder,
+.dark-theme .form-browse__input::-moz-placeholder,
+.dark-theme .form-browse__area::-moz-placeholder {
+  color: #94A6BE;
+}
+
+.dark-theme .form-new__input::placeholder,
+.dark-theme .form-new__area::placeholder,
+.dark-theme .form-browse__input::placeholder,
+.dark-theme .form-browse__area::placeholder {
+  color: #94A6BE;
+}
+
+.dark-theme .subttl {
+  color: #FFFFFF;
+}
+
+.dark-theme .status__themes {
+  color: #FFFFFF;
+}
+
+.dark-theme .status__theme {
+  color: #FFFFFF;
+  border-color: rgba(148, 166, 190, 0.4);
+}
+
+.dark-theme .status__theme p {
+  color: #94A6BE;
+}
+
+.dark-theme .status__theme--selected {
+  background-color: rgba(86, 94, 239, 0.15);
+  border-color: #565EEF;
+}
+
+.dark-theme .status__theme--selected p {
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+.dark-theme ._btn-bor {
+  border-color: #565EEF;
+  color: #FFFFFF;
+}
+
+.dark-theme ._btn-bor a {
+  color: #FFFFFF;
+}
+
+.dark-theme ._btn-bg {
+  background-color: #565EEF;
+  color: #FFFFFF;
+}
+
+.dark-theme ._btn-bg a {
+  color: #FFFFFF;
+}
+
+.dark-theme .calendar__ttl {
+  color: #FFFFFF;
+}
+
+.dark-theme .categories__p {
+  color: #FFFFFF;
+}
+
+/* Более насыщенные цвета категорий для темной темы */
+.dark-theme ._orange {
+  background-color: #FFB366;
+  color: #FF6D00;
+}
+
+.dark-theme ._green {
+  background-color: #6FCF97;
+  color: #00A86B;
+}
+
+.dark-theme ._purple {
+  background-color: #C896FF;
+  color: #7B2CBF;
+}

@@ -1,8 +1,5 @@
-// Импортируем Link для навигации
 import { Link } from "react-router-dom";
-// Импортируем styled-components для стилизации
 import styled from "styled-components";
-// Импортируем глобальные стили
 import { GlobalStyle } from "../App.styled";
 
 const Wrapper = styled.div`
@@ -10,11 +7,12 @@ const Wrapper = styled.div`
   width: 100vw;
   min-height: 100vh;
   overflow: hidden;
-  background-color: #f1f1f1;
+  background-color: ${(props) => props.theme.background};
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  transition: background-color 0.3s ease;
 `;
 
 const Container = styled.div`
@@ -26,51 +24,60 @@ const Container = styled.div`
 `;
 
 const NotFoundBlock = styled.div`
-  background-color: #ffffff;
+  background-color: ${(props) => props.theme.cardBackground};
   border-radius: 12px;
   padding: 60px 40px;
+  transition: background-color 0.3s ease;
 `;
 
 const NotFoundTitle = styled.h1`
   font-size: 48px;
   font-weight: 700;
   margin-bottom: 20px;
-  color: #000000;
+  color: ${(props) => props.theme.text};
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  transition: color 0.3s ease;
 `;
 
 const NotFoundSubtitle = styled.h2`
   font-size: 32px;
   font-weight: 500;
   margin-bottom: 30px;
-  color: #000000;
+  color: ${(props) => props.theme.text};
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  transition: color 0.3s ease;
 `;
 
 const NotFoundText = styled.p`
   font-size: 18px;
   line-height: 24px;
+  letter-spacing: -0.05px;
   margin-bottom: 40px;
-  color: #000000;
+  color: ${(props) => props.theme.text};
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  transition: color 0.3s ease;
 `;
 
 const HomeLink = styled(Link)`
   display: inline-block;
   padding: 15px 30px;
-  background-color: #580ea2;
+  background-color: ${(props) => props.theme.primary};
   color: #ffffff;
   text-decoration: none;
   border-radius: 6px;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.05px;
   transition: background-color 0.3s;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
 
   &:hover {
-    background-color: #33399b;
+    background-color: ${(props) => props.theme.primaryHover};
   }
 `;
 
-// страница 404
-// показывается когда маршрут не найден
-// маршрут "*" в AppRoutes перенаправляет сюда все несуществующие пути
+// Страница 404 - показывается когда пользователь переходит на несуществующий маршрут
 function NotFoundPage() {
   return (
     <>

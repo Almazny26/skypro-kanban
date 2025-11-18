@@ -1,14 +1,8 @@
-// Импортируем компоненты для навигации и роутинга
 import { Link, useNavigate } from "react-router-dom";
-// Импортируем styled-components для стилизации
 import styled from "styled-components";
-// Импортируем глобальные стили
 import { GlobalStyle } from "../App.styled";
-// Импортируем useState и useContext для управления состоянием
 import { useState, useContext } from "react";
-// Импортируем API для регистрации
 import { registerUser } from "../services/userApi";
-// Импортируем контекст авторизации
 import { AuthContext } from "../context/AuthContext";
 
 const Wrapper = styled.div`
@@ -16,10 +10,11 @@ const Wrapper = styled.div`
   width: 100vw;
   min-height: 100vh;
   overflow: hidden;
-  background-color: #f1f1f1;
+  background-color: ${(props) => props.theme.background};
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.3s ease;
 `;
 
 const ContainerSignup = styled.div`
@@ -35,9 +30,10 @@ const ContainerSignup = styled.div`
 const Modal = styled.div`
   width: 100%;
   max-width: 366px;
-  background-color: #ffffff;
+  background-color: ${(props) => props.theme.cardBackground};
   border-radius: 12px;
   padding: 43px 47px 47px 40px;
+  transition: background-color 0.3s ease;
 `;
 
 const ModalBlock = styled.div`
@@ -66,23 +62,29 @@ const ModalFormLogin = styled.form`
 const ModalInput = styled.input`
   width: 100%;
   border: none;
-  border-bottom: 1px solid #d0cece;
+  border-bottom: 1px solid
+    ${(props) =>
+      props.$hasError
+        ? props.theme.error || "#ff0000"
+        : props.theme.inputBorder || props.theme.border};
   padding: 8px 1px;
   font-size: 18px;
   line-height: 24px;
   letter-spacing: -0.05px;
-  color: #000000;
+  color: ${(props) => props.theme.text};
+  background-color: transparent;
+  transition: border-bottom-color 0.3s ease, color 0.3s ease;
 
   &::placeholder {
-    color: #d0cece;
+    color: ${(props) => props.theme.textSecondary};
   }
 
   &:focus {
     outline: none;
-    border-bottom-color: #33399b;
+    border-bottom-color: ${(props) =>
+      props.$hasError ? props.theme.error || "#ff0000" : props.theme.primary};
   }
 `;
-
 
 const ModalFormGroup = styled.div`
   text-align: center;
@@ -93,7 +95,7 @@ const ModalFormGroup = styled.div`
     font-weight: 400;
     line-height: 24px;
     letter-spacing: -0.05px;
-    color: #000000;
+    color: ${(props) => props.theme.text};
     margin-bottom: 10px;
   }
 
@@ -102,11 +104,11 @@ const ModalFormGroup = styled.div`
     font-weight: 400;
     line-height: 24px;
     letter-spacing: -0.05px;
-    color: #580ea2;
+    color: ${(props) => props.theme.primary};
     text-decoration: underline;
 
     &:hover {
-      color: #33399b;
+      color: ${(props) => props.theme.primaryHover};
     }
   }
 `;
@@ -121,7 +123,8 @@ const ErrorMessage = styled.div`
 const ModalBtnSignupEnt = styled.button`
   width: 100%;
   height: 52px;
-  background-color: #580ea2;
+  background-color: ${(props) =>
+    props.disabled ? "#cccccc" : props.theme.primary};
   border-radius: 6px;
   border: none;
   margin-top: 20px;
@@ -131,10 +134,10 @@ const ModalBtnSignupEnt = styled.button`
   letter-spacing: -0.05px;
   color: #ffffff;
   transition: background-color 0.3s;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
 
-  &:hover {
-    background-color: #33399b;
+  &:hover:not(:disabled) {
+    background-color: ${(props) => props.theme.primaryHover};
   }
 
   &:disabled {
@@ -148,8 +151,8 @@ const ModalBtnSignupEnt = styled.button`
   }
 `;
 
-// страница регистрации
-// после регистрации сразу авторизуемся
+// Страница регистрации нового пользователя
+// После успешной регистрации автоматически авторизуемся
 function SignUpPage() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
@@ -157,46 +160,92 @@ function SignUpPage() {
   const [loginValue, setLoginValue] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({
+    name: false,
+    login: false,
+    password: false,
+  });
   const [isLoading, setIsLoading] = useState(false);
 
-  // при отправке формы регистрируемся, авторизуемся и переходим на главную
+  // Проверяю, заполнены ли все поля - если да, кнопка станет активной
+  const isFormValid = name.trim() && loginValue.trim() && password.trim();
+
+  // Обработчик отправки формы - регистрируемся, авторизуемся и переходим на главную
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    
-    // Валидация полей
-    if (!loginValue.trim()) {
-      setError("Введите логин");
-      return;
-    }
+    setFieldErrors({ name: false, login: false, password: false });
+
+    // Проверяю, что все поля заполнены
+    let hasErrors = false;
+    const newFieldErrors = { name: false, login: false, password: false };
+
     if (!name.trim()) {
-      setError("Введите имя");
-      return;
+      newFieldErrors.name = true;
+      hasErrors = true;
+    }
+    if (!loginValue.trim()) {
+      newFieldErrors.login = true;
+      hasErrors = true;
     }
     if (!password.trim()) {
-      setError("Введите пароль");
+      newFieldErrors.password = true;
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      setFieldErrors(newFieldErrors);
+      setError("Заполните все обязательные поля");
       return;
     }
-    
+
     setIsLoading(true);
 
     try {
       await registerUser(loginValue.trim(), name.trim(), password);
-      login(); // меняет isAuth на true через контекст
+      login(); // Авторизуем пользователя через контекст
       navigate("/");
     } catch (err) {
-      // Обрабатываем ошибки
-      console.error("Ошибка регистрации:", err);
+      // Если что-то пошло не так, показываю ошибку пользователю
       if (err.status === 400) {
-        setError(err.message || "Пользователь с таким логином уже существует");
+        const errorMessage =
+          err.message || "Пользователь с таким логином уже существует";
+        setError(errorMessage);
+        setFieldErrors({ name: false, login: true, password: false });
       } else if (err.status === 0) {
-        setError(err.message || "Ошибка сети. Проверьте подключение к интернету.");
+        setError(
+          err.message || "Ошибка сети. Проверьте подключение к интернету."
+        );
       } else {
         setError(err.message || "Произошла ошибка при регистрации");
       }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+    if (fieldErrors.name && e.target.value.trim()) {
+      setFieldErrors((prev) => ({ ...prev, name: false }));
+    }
+    setError("");
+  };
+
+  const handleLoginChange = (e) => {
+    setLoginValue(e.target.value);
+    if (fieldErrors.login && e.target.value.trim()) {
+      setFieldErrors((prev) => ({ ...prev, login: false }));
+    }
+    setError("");
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    if (fieldErrors.password && e.target.value.trim()) {
+      setFieldErrors((prev) => ({ ...prev, password: false }));
+    }
+    setError("");
   };
 
   return (
@@ -216,7 +265,8 @@ function SignUpPage() {
                   id="first-name"
                   placeholder="Имя"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={handleNameChange}
+                  $hasError={fieldErrors.name}
                   required
                 />
                 <ModalInput
@@ -225,7 +275,8 @@ function SignUpPage() {
                   id="loginReg"
                   placeholder="Эл. почта"
                   value={loginValue}
-                  onChange={(e) => setLoginValue(e.target.value)}
+                  onChange={handleLoginChange}
+                  $hasError={fieldErrors.login}
                   required
                 />
                 <ModalInput
@@ -234,11 +285,16 @@ function SignUpPage() {
                   id="passwordFirst"
                   placeholder="Пароль"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handlePasswordChange}
+                  $hasError={fieldErrors.password}
                   required
                 />
                 {error && <ErrorMessage>{error}</ErrorMessage>}
-                <ModalBtnSignupEnt type="submit" id="SignUpEnter" disabled={isLoading}>
+                <ModalBtnSignupEnt
+                  type="submit"
+                  id="SignUpEnter"
+                  disabled={!isFormValid || isLoading}
+                >
                   {isLoading ? "Регистрация..." : "Зарегистрироваться"}
                 </ModalBtnSignupEnt>
                 <ModalFormGroup>

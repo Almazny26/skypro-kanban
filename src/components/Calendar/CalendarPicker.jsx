@@ -13,7 +13,7 @@ import {
 } from "date-fns";
 import "./CalendarPicker.css";
 
-// Компонент календаря с дизайном из макета
+// Компонент календаря для выбора даты выполнения задачи
 function CalendarContent({
   selected,
   onDateSelect,
@@ -129,7 +129,7 @@ function CalendarContent({
             <>
               Выберите срок исполнения:{" "}
               <span className="date-control">
-                {format(selected, "dd.MM.yy")}.
+                {format(selected, "d.MM")}
               </span>
             </>
           ) : (
@@ -176,7 +176,7 @@ function CalendarPicker({ selectedDate, onDateChange, isEditing = true }) {
   };
 
   if (!isEditing) {
-    // В режиме просмотра просто показываем дату
+    // В режиме просмотра просто показываю дату без возможности изменения
     const date = selectedDate ? new Date(selectedDate) : new Date();
     return (
       <div className="calendar-view">

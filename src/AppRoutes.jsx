@@ -5,21 +5,19 @@ import SignUpPage from "./pages/SignUpPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-// главный компонент с роутингом
-// состояние авторизации проверяется в ProtectedRoute через контекст
+// Компонент с настройкой всех маршрутов приложения
+// ProtectedRoute проверяет авторизацию через контекст и редиректит на /login если не авторизован
 function AppRoutes() {
 
   return (
     <Router>
       <Routes>
-        {/* публичные страницы - доступны без авторизации */}
+        {/* Публичные страницы - доступны всем */}
         <Route path="/login" element={<SignInPage />} />
         <Route path="/register" element={<SignUpPage />} />
 
-        {/* защищенные страницы - нужна авторизация */}
-        {/* ProtectedRoute проверяет isAuth, если false - редирект на /login */}
-        {/* модальные окна (новая задача, просмотр карточки, выход) находятся в MainPage */}
-        {/* роут для главной страницы */}
+        {/* Защищенные страницы - нужна авторизация */}
+        {/* Модальные окна (новая задача, просмотр карточки, выход) рендерятся в MainPage */}
         <Route
           path="/"
           element={
@@ -28,7 +26,7 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        {/* роут для модального окна создания новой задачи */}
+        {/* Роут для модального окна создания новой задачи */}
         <Route
           path="/new-card"
           element={
@@ -37,7 +35,7 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        {/* роут для модального окна просмотра карточки */}
+        {/* Роут для модального окна просмотра/редактирования карточки */}
         <Route
           path="/card/:id"
           element={
@@ -46,7 +44,7 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        {/* роут для модального окна выхода */}
+        {/* Роут для модального окна выхода */}
         <Route
           path="/exit"
           element={
@@ -56,7 +54,7 @@ function AppRoutes() {
           }
         />
 
-        {/* * - любой другой путь, страница 404 */}
+        {/* Любой другой путь ведет на страницу 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>

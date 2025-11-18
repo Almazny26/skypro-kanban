@@ -2,16 +2,16 @@ import { useState, useCallback } from "react";
 import { TaskContext } from "./TaskContext";
 
 // Провайдер для управления списком задач
-// Хранит задачи в контексте и предоставляет методы для их обновления
+// Хранит все задачи в контексте и предоставляет методы для работы с ними
 const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
 
-  // Добавить задачу в список
+  // Добавляю новую задачу в список
   const addTask = useCallback((task) => {
     setTasks((prevTasks) => [...prevTasks, task]);
   }, []);
 
-  // Обновить задачу в списке
+  // Обновляю существующую задачу в списке
   const updateTask = useCallback((taskId, updatedTask) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
@@ -20,14 +20,14 @@ const TaskProvider = ({ children }) => {
     );
   }, []);
 
-  // Удалить задачу из списка
+  // Удаляю задачу из списка
   const deleteTask = useCallback((taskId) => {
     setTasks((prevTasks) =>
       prevTasks.filter((task) => task._id !== taskId && task.id !== taskId)
     );
   }, []);
 
-  // Установить список задач (для первой загрузки)
+  // Устанавливаю весь список задач (используется при первой загрузке с сервера)
   const setTasksList = useCallback((tasksList) => {
     setTasks(tasksList);
   }, []);

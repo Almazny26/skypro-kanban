@@ -14,7 +14,8 @@ const popUserAppear = keyframes`
 export const HeaderStyled = styled.header`
   width: 100%;
   margin: 0 auto;
-  background-color: #ffffff;
+  background-color: ${(props) => props.theme.cardBackground};
+  transition: background-color 0.3s ease;
 `;
 
 export const HeaderBlock = styled.div`
@@ -121,13 +122,14 @@ export const PopUserSet = styled.div`
   width: 213px;
   height: 205px;
   border-radius: 10px;
-  border: 0.7px solid rgba(148, 166, 190, 0.4);
-  background: #fff;
+  border: 0.7px solid ${(props) => props.theme.inputBorder || "rgba(148, 166, 190, 0.4)"};
+  background: ${(props) => props.theme.cardBackground};
   box-shadow: 0px 10px 39px 0px rgba(26, 56, 101, 0.21);
   padding: 34px;
   text-align: center;
   z-index: 10;
   transform: translateX(0);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 
   ${(props) =>
     props.$isOpen &&
@@ -137,20 +139,43 @@ export const PopUserSet = styled.div`
 `;
 
 export const PopUserName = styled.p`
-  color: #000;
+  color: ${(props) => props.theme.text};
   font-size: 14px;
   font-weight: 500;
   line-height: 21px;
   letter-spacing: -0.14px;
   margin-bottom: 4px;
+  transition: color 0.3s ease;
 `;
 
 export const PopUserMail = styled.p`
-  color: #94a6be;
+  color: ${(props) => props.theme.textSecondary};
   font-size: 14px;
   line-height: 21px;
   letter-spacing: -0.14px;
   margin-bottom: 10px;
+  transition: color 0.3s ease;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  position: relative;
+  
+  /* Эффект "тумана" для длинных email - градиент справа */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      ${(props) => props.theme.cardBackground || "#ffffff"} 100%
+    );
+    pointer-events: none;
+  }
 `;
 
 export const PopUserTheme = styled.div`
@@ -160,10 +185,11 @@ export const PopUserTheme = styled.div`
   margin-bottom: 30px;
 
   p {
-    color: #000;
+    color: ${(props) => props.theme.text};
     font-size: 14px;
     line-height: 21px;
     letter-spacing: -0.14px;
+    transition: color 0.3s ease;
   }
 
   input[type="checkbox"] {

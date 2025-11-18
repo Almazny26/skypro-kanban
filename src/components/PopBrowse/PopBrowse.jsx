@@ -3,9 +3,10 @@ import { useState, useEffect, useContext } from "react";
 import { getTaskById, updateTask, deleteTask } from "../../services/tasksApi";
 import CalendarPicker from "../Calendar/CalendarPicker";
 import { TaskContext } from "../../context/TaskContext";
+import { toast } from "react-toastify";
 
 function PopBrowse({ cardId }) {
-  const { updateTask: updateTaskInContext, deleteTask: deleteTaskInContext } =
+  const { tasks, updateTask: updateTaskInContext, deleteTask: deleteTaskInContext } =
     useContext(TaskContext);
   const navigate = useNavigate();
   const [task, setTask] = useState(null);
@@ -32,12 +33,31 @@ function PopBrowse({ cardId }) {
     if (cardId) {
       loadTask();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardId]);
 
+  // Загружаю задачу для просмотра/редактирования
   const loadTask = async () => {
     try {
       setIsLoading(true);
       setError("");
+      
+      // Сначала проверяю, есть ли задача уже в контексте (быстрее, чем запрос к серверу)
+      const taskFromContext = tasks.find((t) => t._id === cardId);
+      
+      if (taskFromContext) {
+        // Если нашел в контексте, использую её данные
+        setTask(taskFromContext);
+        setTitle(taskFromContext.title || "");
+        setDescription(taskFromContext.description || "");
+        setTopic(taskFromContext.topic || "Web Design");
+        setStatus(taskFromContext.status || "Без статуса");
+        setDate(taskFromContext.date || new Date().toISOString());
+        setIsLoading(false);
+        return;
+      }
+      
+      // Если не нашел в контексте, загружаю с сервера
       const taskData = await getTaskById(cardId);
       setTask(taskData);
       setTitle(taskData.title || "");
@@ -46,11 +66,40 @@ function PopBrowse({ cardId }) {
       setStatus(taskData.status || "Без статуса");
       setDate(taskData.date || new Date().toISOString());
     } catch (err) {
-      console.error("Ошибка при загрузке задачи:", err);
+      // Если сервер вернул 404, но задача есть в контексте, использую её
       if (err.status === 404) {
-        setError("Задача не найдена");
+        const taskFromContext = tasks.find((t) => t._id === cardId);
+        if (taskFromContext) {
+          // Использую задачу из контекста
+          setTask(taskFromContext);
+          setTitle(taskFromContext.title || "");
+          setDescription(taskFromContext.description || "");
+          setTopic(taskFromContext.topic || "Web Design");
+          setStatus(taskFromContext.status || "Без статуса");
+          setDate(taskFromContext.date || new Date().toISOString());
+          setError("");
+        } else {
+          setError("Задача не найдена");
+        }
+      } else if (err.status === 401) {
+        setError("Необходима авторизация");
+        navigate("/login");
+      } else if (err.status === 0) {
+        // При ошибке сети пытаюсь использовать данные из контекста
+        const taskFromContext = tasks.find((t) => t._id === cardId);
+        if (taskFromContext) {
+          setTask(taskFromContext);
+          setTitle(taskFromContext.title || "");
+          setDescription(taskFromContext.description || "");
+          setTopic(taskFromContext.topic || "Web Design");
+          setStatus(taskFromContext.status || "Без статуса");
+          setDate(taskFromContext.date || new Date().toISOString());
+          setError("");
+        } else {
+          setError("Ошибка подключения к серверу. Проверьте интернет-соединение или попробуйте позже.");
+        }
       } else {
-        setError("Не удалось загрузить задачу");
+        setError(err.message || "Не удалось загрузить задачу");
       }
     } finally {
       setIsLoading(false);
@@ -72,10 +121,11 @@ function PopBrowse({ cardId }) {
     }
   };
 
+  // Обработчик сохранения изменений задачи
   const handleSave = async () => {
     setError("");
 
-    // Валидация полей перед отправкой
+    // Проверяю, что все обязательные поля заполнены
     if (!title || !title.trim()) {
       setError(
         "Пожалуйста, заполните все обязательные поля. Введите название задачи."
@@ -96,7 +146,7 @@ function PopBrowse({ cardId }) {
       setError("Пожалуйста, заполните все обязательные поля. Выберите дату.");
       return;
     }
-    // Проверяем, что дата валидна
+    // Проверяю, что дата валидна
     const dateObj = new Date(date);
     if (isNaN(dateObj.getTime())) {
       setError("Пожалуйста, заполните все обязательные поля. Выберите дату.");
@@ -104,14 +154,11 @@ function PopBrowse({ cardId }) {
     }
 
     try {
-      // Используем дату в том же формате, в котором она пришла от API
-      // Если дата была изменена через календарь, она уже в формате ISO
+      // Преобразую дату в ISO формат для отправки на сервер
       let dateToSend = date;
       if (date) {
-        // Если дата - это строка, которая не является ISO, преобразуем её
         const dateObj = new Date(date);
         if (!isNaN(dateObj.getTime())) {
-          // Используем ISO формат, как при создании задачи
           dateToSend = dateObj.toISOString();
         }
       }
@@ -124,7 +171,7 @@ function PopBrowse({ cardId }) {
         date: dateToSend,
       };
 
-      // Проверяем, что все обязательные поля не пустые
+      // Еще раз проверяю, что все поля заполнены
       if (
         !taskData.title ||
         !taskData.topic ||
@@ -135,10 +182,9 @@ function PopBrowse({ cardId }) {
         return;
       }
 
-      console.log("Отправка данных задачи:", taskData);
       await updateTask(cardId, taskData);
 
-      // Обновляем задачу в контексте без GET запроса
+      // Обновляю задачу в контексте, чтобы изменения сразу отобразились на доске
       updateTaskInContext(cardId, {
         title: taskData.title,
         topic: taskData.topic,
@@ -147,7 +193,7 @@ function PopBrowse({ cardId }) {
         date: taskData.date,
       });
 
-      // Обновляем локальное состояние задачи
+      // Обновляю локальное состояние, чтобы форма отображала актуальные данные
       setTask({
         ...task,
         title: taskData.title,
@@ -163,26 +209,34 @@ function PopBrowse({ cardId }) {
       setDate(taskData.date);
 
       setIsEditing(false);
+      toast.success("Задача успешно обновлена!");
     } catch (err) {
-      console.error("Ошибка при обновлении задачи:", err);
-      console.error("Детали ошибки:", err.data);
       if (err.status === 400) {
-        // Показываем детальное сообщение об ошибке от API, если оно есть
+        // Показываю детальное сообщение об ошибке от сервера
         const errorMessage =
           err.data?.error ||
           err.data?.message ||
           err.message ||
           "Неверные данные задачи. Проверьте все поля.";
         setError(errorMessage);
+        toast.error(errorMessage);
       } else if (err.status === 401) {
         setError("Необходима авторизация");
+        toast.error("Необходима авторизация");
         navigate("/login");
+      } else if (err.status === 0) {
+        const errorMsg = "Ошибка подключения к серверу. Проверьте интернет-соединение или попробуйте позже.";
+        setError(errorMsg);
+        toast.error(errorMsg);
       } else {
-        setError(err.message || "Произошла ошибка при обновлении задачи");
+        const errorMsg = err.message || "Произошла ошибка при обновлении задачи";
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     }
   };
 
+  // Обработчик удаления задачи
   const handleDelete = async () => {
     if (!window.confirm("Вы уверены, что хотите удалить эту задачу?")) {
       return;
@@ -191,37 +245,53 @@ function PopBrowse({ cardId }) {
     try {
       setError("");
       await deleteTask(cardId);
-      // Удаляем задачу из контекста без GET запроса
+      // Удаляю задачу из контекста, чтобы она сразу исчезла с доски
       deleteTaskInContext(cardId);
+      toast.success("Задача успешно удалена!");
       navigate("/");
     } catch (err) {
-      console.error("Ошибка при удалении задачи:", err);
       if (err.status === 401) {
         setError("Необходима авторизация");
+        toast.error("Необходима авторизация");
         navigate("/login");
+      } else if (err.status === 0) {
+        const errorMsg = "Ошибка подключения к серверу. Проверьте интернет-соединение или попробуйте позже.";
+        setError(errorMsg);
+        toast.error(errorMsg);
       } else {
-        setError(err.message || "Произошла ошибка при удалении задачи");
+        const errorMessage =
+          err.data?.error ||
+          err.data?.message ||
+          err.message ||
+          "Произошла ошибка при удалении задачи";
+        setError(errorMessage);
+        toast.error(errorMessage);
       }
     }
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("ru-RU", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "2-digit",
-    });
-  };
 
   if (isLoading) {
     return (
       <div className="pop-browse" id="popBrowse">
         <div className="pop-browse__container">
           <div className="pop-browse__block">
-            <div className="pop-browse__content">
+            <div className="pop-browse__content" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "200px", gap: "20px" }}>
+              <div style={{
+                width: "50px",
+                height: "50px",
+                border: "4px solid #eaeef6",
+                borderTop: "4px solid #580ea2",
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite"
+              }}></div>
               <p>Загрузка...</p>
+              <style>{`
+                @keyframes spin {
+                  0% { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
+                }
+              `}</style>
             </div>
           </div>
         </div>

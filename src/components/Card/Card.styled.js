@@ -14,25 +14,32 @@ const cardAnimation = keyframes`
 export const CardItem = styled.div`
   padding: 5px;
   animation: ${cardAnimation} 500ms linear both;
-  overflow: hidden;
+  overflow: visible;
   animation-delay: ${(props) => props.$delayMs || 0}ms;
+  position: relative;
+  z-index: ${(props) => (props.$isDragging ? 1000 : 1)};
 `;
 
 export const CardStyled = styled.div`
   width: 220px;
   height: 130px;
-  background-color: #ffffff;
+  background-color: ${(props) => props.theme?.cardBackground || "#ffffff"};
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: stretch;
   padding: 15px 13px 19px;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
 
   @media screen and (max-width: 1200px) {
     width: 220px;
     height: 130px;
-    background-color: #ffffff;
+    background-color: ${(props) => props.theme?.cardBackground || "#ffffff"};
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -65,18 +72,36 @@ const BaseTheme = styled.div`
 `;
 
 export const CardThemeOrange = styled(BaseTheme)`
-  background-color: #ffe4c2;
-  color: #ff6d00;
+  background-color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#FFB366" : "#ffe4c2";
+  }};
+  color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#FF6D00" : "#ff6d00";
+  }};
 `;
 
 export const CardThemeGreen = styled(BaseTheme)`
-  background-color: #b4fdd1;
-  color: #06b16e;
+  background-color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#6FCF97" : "#b4fdd1";
+  }};
+  color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#00A86B" : "#06b16e";
+  }};
 `;
 
 export const CardThemePurple = styled(BaseTheme)`
-  background-color: #e9d4ff;
-  color: #9a48f1;
+  background-color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#C896FF" : "#e9d4ff";
+  }};
+  color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#7B2CBF" : "#9a48f1";
+  }};
 `;
 
 export const CardThemeGray = styled(BaseTheme)`
@@ -119,8 +144,9 @@ export const CardTitle = styled.h3`
   font-size: 14px;
   font-weight: 500;
   line-height: 18px;
-  color: #000000;
+  color: ${(props) => props.theme?.text || "#000000"};
   margin-bottom: 10px;
+  transition: color 0.3s ease;
 `;
 
 export const CardDate = styled.div`
@@ -136,7 +162,8 @@ export const CardDate = styled.div`
     margin-left: 6px;
     font-size: 10px;
     line-height: 13px;
-    color: #94a6be;
+    color: ${(props) => props.theme?.textSecondary || "#94a6be"};
     letter-spacing: 0.2px;
+    transition: color 0.3s ease;
   }
 `;

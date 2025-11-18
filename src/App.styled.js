@@ -33,7 +33,9 @@ export const GlobalStyle = createGlobalStyle`
     width: 100%;
     height: 100%;
     font-family: "Roboto", Arial, Helvetica, sans-serif;
-    color: #000000;
+    color: ${(props) => props.theme.text};
+    background-color: ${(props) => props.theme.background};
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 `;
 
@@ -42,7 +44,8 @@ export const Wrapper = styled.div`
   width: 100vw;
   min-height: 100vh;
   overflow: hidden;
-  background-color: #f1f1f1;
+  background-color: ${(props) => props.theme.background};
+  transition: background-color 0.3s ease;
 `;
 
 export const Container = styled.div`
