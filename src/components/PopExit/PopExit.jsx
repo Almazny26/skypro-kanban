@@ -2,17 +2,16 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
-// модальное окно подтверждения выхода
-// logout - функция из AuthContext, меняет isAuth на false
+// Модальное окно подтверждения выхода из аккаунта
 function PopExit() {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
 
-  // обработчик выхода
+  // Обработчик выхода - разлогиниваю пользователя и перехожу на страницу входа
   const handleExit = (e) => {
     e.preventDefault();
-    logout(); // меняет isAuth на false через контекст
-    navigate("/login"); // переход на страницу входа
+    logout(); // Разлогиниваю пользователя через контекст
+    navigate("/login"); // Перехожу на страницу входа
   };
 
   return (

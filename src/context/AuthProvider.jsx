@@ -1,33 +1,44 @@
 import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-import { getToken, removeToken } from "../services/api";
+import { getToken, removeToken, getUserName, getUserLogin } from "../services/api";
 
-// Провайдер для управления авторизацией
+// Провайдер для управления авторизацией пользователя
 const AuthProvider = ({ children }) => {
-  // Проверяем наличие токена при инициализации
+  // Проверяю, есть ли токен при загрузке приложения
   const [isAuth, setIsAuth] = useState(() => {
     return !!getToken();
   });
 
+  // Загружаю имя и логин пользователя из localStorage
+  const [userName, setUserName] = useState(() => getUserName() || "");
+  const [userLogin, setUserLogin] = useState(() => getUserLogin() || "");
+
   useEffect(() => {
-    // Проверяем токен при монтировании компонента
+    // При монтировании компонента проверяю токен и загружаю данные пользователя
     setIsAuth(!!getToken());
+    setUserName(getUserName() || "");
+    setUserLogin(getUserLogin() || "");
   }, []);
 
-  // Функция входа - сохраняет токен и устанавливает авторизацию
+  // Функция входа - авторизую пользователя
   const login = () => {
     setIsAuth(true);
+    // Обновляю данные пользователя из localStorage
+    setUserName(getUserName() || "");
+    setUserLogin(getUserLogin() || "");
   };
 
-  // Функция выхода - удаляет токен и сбрасывает авторизацию
+  // Функция выхода - разлогиниваю пользователя
   const logout = () => {
     removeToken();
     setIsAuth(false);
+    setUserName("");
+    setUserLogin("");
   };
 
-  // Предоставляем данные и функции через контекст
+  // Предоставляю данные и функции через контекст для использования во всем приложении
   return (
-    <AuthContext.Provider value={{ isAuth, login, logout }}>
+    <AuthContext.Provider value={{ isAuth, login, logout, userName, userLogin }}>
       {children}
     </AuthContext.Provider>
   );

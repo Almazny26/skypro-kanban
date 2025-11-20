@@ -6,13 +6,13 @@ import PopNewCard from "../components/PopNewCard/PopNewCard";
 import PopBrowse from "../components/PopBrowse/PopBrowse";
 import { GlobalStyle, Wrapper } from "../App.styled";
 
-// главная страница - доска с карточками
-// вся логика страницы здесь
+// Главная страница с Kanban доской
+// Здесь определяю, какое модальное окно показывать в зависимости от URL
 function MainPage() {
   const location = useLocation();
-  const { id } = useParams(); // получаем id карточки из роута /card/:id
+  const { id } = useParams(); // Получаю id карточки из URL /card/:id
 
-  // определяем, какое модальное окно показывать на основе текущего роута
+  // Определяю, какое модальное окно нужно показать
   const showNewCard = location.pathname === "/new-card";
   const showCard = location.pathname.startsWith("/card/");
   const showExit = location.pathname === "/exit";
@@ -21,7 +21,7 @@ function MainPage() {
     <>
       <GlobalStyle />
       <Wrapper>
-        {/* модальные окна - показываются условно на основе роута */}
+        {/* Модальные окна показываются в зависимости от текущего URL */}
         {showExit && <PopExit />}
         {showNewCard && <PopNewCard />}
         {showCard && <PopBrowse cardId={id} />}

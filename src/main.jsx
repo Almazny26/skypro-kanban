@@ -3,8 +3,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "./App.css";
 
-// точка входа в приложение
-// StrictMode нужен для отладки
+// Точка входа в приложение
+// StrictMode помогает находить проблемы в коде во время разработки
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <App />

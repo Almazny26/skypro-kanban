@@ -1,3 +1,5 @@
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Link } from "react-router-dom";
 import {
   CardItem,
@@ -10,8 +12,8 @@ import {
   cardThemes,
 } from "./Card.styled";
 
-// компонент карточки
-// при клике открывает модальное окно просмотра карточки
+// Компонент карточки задачи
+// При клике на карточку открывается модальное окно для просмотра и редактирования
 function Card({
   id: _id, // id карточки, может использоваться для модального окна
   title = "Название задачи",
@@ -20,18 +22,47 @@ function Card({
   date = "30.10.23",
   delayMs = 0,
 }) {
-  // выбираем тему по categoryClass
+  const cardId = _id;
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: cardId });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  // Выбираю компонент темы в зависимости от категории задачи
   const ThemeComponent = cardThemes[categoryClass] || cardThemes._gray;
 
   return (
-    <CardItem $delayMs={delayMs}>
-      <CardStyled data-card-id={_id}>
+    <CardItem
+      $delayMs={delayMs}
+      ref={setNodeRef}
+      style={style}
+      data-card-id={cardId}
+    >
+      <CardStyled
+        data-card-id={cardId}
+        {...attributes}
+        {...listeners}
+        style={{
+          cursor: isDragging ? "grabbing" : "grab",
+          touchAction: "none",
+        }}
+      >
         <CardGroup>
           <ThemeComponent>
             <p>{category}</p>
           </ThemeComponent>
           {/* ссылка на модальное окно просмотра карточки */}
-          <Link to={`/card/${_id}`}>
+          <Link to={`/card/${cardId}`} onClick={(e) => e.stopPropagation()}>
             <CardBtn>
               <div></div>
               <div></div>
@@ -41,7 +72,7 @@ function Card({
         </CardGroup>
         <CardContent>
           {/* название тоже ссылка на модальное окно */}
-          <Link to={`/card/${_id}`}>
+          <Link to={`/card/${cardId}`} onClick={(e) => e.stopPropagation()}>
             <CardTitle>{title}</CardTitle>
           </Link>
           <CardDate>

@@ -1,7 +1,7 @@
 import request from "./api";
-import { setToken } from "./api";
+import { setToken, setUserData } from "./api";
 
-// Регистрация пользователя
+// Регистрирую нового пользователя
 export const registerUser = async (login, name, password) => {
   const response = await request("/user", {
     method: "POST",
@@ -12,15 +12,20 @@ export const registerUser = async (login, name, password) => {
     }),
   });
 
-  // Сохраняем токен после успешной регистрации
-  if (response.user && response.user.token) {
-    setToken(response.user.token);
+  // После успешной регистрации сохраняю токен и данные пользователя
+  if (response.user) {
+    if (response.user.token) {
+      setToken(response.user.token);
+    }
+    if (response.user.name && response.user.login) {
+      setUserData(response.user.name, response.user.login);
+    }
   }
 
   return response;
 };
 
-// Авторизация пользователя
+// Авторизую пользователя
 export const loginUser = async (login, password) => {
   const response = await request("/user/login", {
     method: "POST",
@@ -30,18 +35,22 @@ export const loginUser = async (login, password) => {
     }),
   });
 
-  // Сохраняем токен после успешной авторизации
-  if (response.user && response.user.token) {
-    setToken(response.user.token);
+  // После успешной авторизации сохраняю токен и данные пользователя
+  if (response.user) {
+    if (response.user.token) {
+      setToken(response.user.token);
+    }
+    if (response.user.name && response.user.login) {
+      setUserData(response.user.name, response.user.login);
+    }
   }
 
   return response;
 };
 
-// Получить список пользователей
+// Получаю список всех пользователей (если понадобится)
 export const getUsers = async () => {
   return await request("/user", {
     method: "GET",
   });
 };
-

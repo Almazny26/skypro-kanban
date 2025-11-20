@@ -14,30 +14,51 @@ const cardAnimation = keyframes`
 export const CardItem = styled.div`
   padding: 5px;
   animation: ${cardAnimation} 500ms linear both;
-  overflow: hidden;
+  overflow: visible;
   animation-delay: ${(props) => props.$delayMs || 0}ms;
+  position: relative;
+  z-index: ${(props) => (props.$isDragging ? 1000 : 1)};
+
+  @media screen and (max-width: 1200px) {
+    flex-shrink: 0;
+    min-width: fit-content;
+  }
 `;
 
 export const CardStyled = styled.div`
   width: 220px;
   height: 130px;
-  background-color: #ffffff;
+  background-color: ${(props) => props.theme?.cardBackground || "#ffffff"};
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: stretch;
   padding: 15px 13px 19px;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
 
   @media screen and (max-width: 1200px) {
     width: 220px;
     height: 130px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: stretch;
+    min-width: 220px;
+    flex-shrink: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 200px;
+    height: 120px;
+    min-width: 200px;
+    padding: 12px 10px 15px;
+  }
+
+  @media screen and (max-width: 495px) {
+    width: 220px;
+    height: 130px;
+    min-width: 220px;
     padding: 15px 13px 19px;
   }
 `;
@@ -56,32 +77,90 @@ const BaseTheme = styled.div`
   height: 20px;
   padding: 5px 14px;
   border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  overflow: visible;
 
   p {
     font-size: 10px;
     font-weight: 600;
     line-height: 10px;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  @media screen and (max-width: 495px) {
+    padding: 5px 14px;
+    height: 20px;
+    
+    p {
+      font-size: 10px;
+      line-height: 10px;
+      display: block;
+      visibility: visible;
+      opacity: 1;
+    }
   }
 `;
 
 export const CardThemeOrange = styled(BaseTheme)`
-  background-color: #ffe4c2;
-  color: #ff6d00;
+  background-color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#FFB366" : "#ffe4c2";
+  }};
+  color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#FF6D00" : "#ff6d00";
+  }};
+
+  p {
+    color: inherit;
+  }
 `;
 
 export const CardThemeGreen = styled(BaseTheme)`
-  background-color: #b4fdd1;
-  color: #06b16e;
+  background-color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#6FCF97" : "#b4fdd1";
+  }};
+  color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#00A86B" : "#06b16e";
+  }};
+
+  p {
+    color: inherit;
+  }
 `;
 
 export const CardThemePurple = styled(BaseTheme)`
-  background-color: #e9d4ff;
-  color: #9a48f1;
+  background-color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#C896FF" : "#e9d4ff";
+  }};
+  color: ${(props) => {
+    const isDark = props.theme?.background === "#151419";
+    return isDark ? "#7B2CBF" : "#9a48f1";
+  }};
+
+  p {
+    color: inherit;
+  }
 `;
 
 export const CardThemeGray = styled(BaseTheme)`
   background: #94a6be;
   color: #ffffff;
+
+  p {
+    color: inherit;
+  }
 `;
 
 export const cardThemes = {
@@ -119,8 +198,9 @@ export const CardTitle = styled.h3`
   font-size: 14px;
   font-weight: 500;
   line-height: 18px;
-  color: #000000;
+  color: ${(props) => props.theme?.text || "#000000"};
   margin-bottom: 10px;
+  transition: color 0.3s ease;
 `;
 
 export const CardDate = styled.div`
@@ -136,7 +216,8 @@ export const CardDate = styled.div`
     margin-left: 6px;
     font-size: 10px;
     line-height: 13px;
-    color: #94a6be;
+    color: ${(props) => props.theme?.textSecondary || "#94a6be"};
     letter-spacing: 0.2px;
+    transition: color 0.3s ease;
   }
 `;

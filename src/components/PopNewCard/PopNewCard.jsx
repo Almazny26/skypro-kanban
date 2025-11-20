@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import { createTask } from "../../services/tasksApi";
 import CalendarPicker from "../Calendar/CalendarPicker";
 import { TaskContext } from "../../context/TaskContext";
+import { toast } from "react-toastify";
 
 function PopNewCard() {
   const { addTask } = useContext(TaskContext);
@@ -14,11 +15,12 @@ function PopNewCard() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Обработчик создания новой задачи
   const handleCreate = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Валидация полей перед отправкой
+    // Проверяю, что все обязательные поля заполнены
     if (!title || !title.trim()) {
       setError("Пожалуйста, заполните все обязательные поля. Введите название задачи.");
       return;
@@ -31,7 +33,7 @@ function PopNewCard() {
       setError("Пожалуйста, заполните все обязательные поля. Выберите дату.");
       return;
     }
-    // Проверяем, что дата валидна
+    // Проверяю, что дата валидна
     const dateObj = new Date(date);
     if (isNaN(dateObj.getTime())) {
       setError("Пожалуйста, заполните все обязательные поля. Выберите дату.");
@@ -50,11 +52,9 @@ function PopNewCard() {
       };
 
       const response = await createTask(taskData);
-      // Обновляем задачи в контексте без GET запроса
-      // API возвращает обновленный список задач после создания
+      // API возвращает обновленный список всех задач, нахожу среди них новую
       if (response && response.length > 0) {
-        // Находим новую задачу в списке (та, которой не было в контексте)
-        // Ищем задачу с совпадающими данными
+        // Ищу задачу с такими же данными, как только что созданная
         const newTask = response.find(
           (task) =>
             task.title === taskData.title &&
@@ -65,16 +65,29 @@ function PopNewCard() {
           addTask(newTask);
         }
       }
+      toast.success("Задача успешно создана!");
       navigate("/");
     } catch (err) {
-      console.error("Ошибка при создании задачи:", err);
       if (err.status === 400) {
-        setError("Неверные данные задачи");
+        const errorMessage =
+          err.data?.error ||
+          err.data?.message ||
+          err.message ||
+          "Неверные данные задачи. Проверьте все поля.";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } else if (err.status === 401) {
         setError("Необходима авторизация");
+        toast.error("Необходима авторизация");
         navigate("/login");
+      } else if (err.status === 0) {
+        const errorMsg = "Ошибка подключения к серверу. Проверьте интернет-соединение или попробуйте позже.";
+        setError(errorMsg);
+        toast.error(errorMsg);
       } else {
-        setError(err.message || "Произошла ошибка при создании задачи");
+        const errorMsg = err.message || "Произошла ошибка при создании задачи";
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } finally {
       setIsLoading(false);

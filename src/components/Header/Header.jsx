@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Container } from "../../App.styled";
 import {
@@ -14,24 +14,25 @@ import {
   PopUserTheme,
   PopUserButton,
 } from "./Header.styled";
+import { ThemeContext } from "../../context/ThemeContext";
+import { AuthContext } from "../../context/AuthContext";
 
-// шапка сайта
-// использует Link для навигации без перезагрузки
+// Компонент шапки сайта с навигацией и меню пользователя
 function Header() {
   const [isUserOpen, setIsUserOpen] = useState(false);
+  const { isDark, toggleTheme } = useContext(ThemeContext);
+  const { userName, userLogin } = useContext(AuthContext);
 
   return (
     <HeaderStyled>
       <Container>
         <HeaderBlock>
-          <Logo className="_show _light">
+          <Logo>
             <Link to="/">
-              <img src="/images/logo.png" alt="logo" />
-            </Link>
-          </Logo>
-          <Logo className="_dark">
-            <Link to="/">
-              <img src="/images/logo_dark.png" alt="logo" />
+              <img
+                src={isDark ? "/images/logo_dark.png" : "/images/logo.png"}
+                alt="logo"
+              />
             </Link>
           </Logo>
           <Nav>
@@ -39,19 +40,25 @@ function Header() {
               <Link to="/new-card">Создать новую задачу</Link>
             </ButtonMainNew>
             <UserButton type="button" onClick={() => setIsUserOpen((v) => !v)}>
-              Ivan Ivanov
+              {userName || "Пользователь"}
             </UserButton>
-            {/* меню показывается когда isUserOpen === true */}
+            {/* Меню пользователя показывается при клике на кнопку */}
             <PopUserSet $isOpen={isUserOpen} id="user-set-target">
-              <PopUserName>Ivan Ivanov</PopUserName>
-              <PopUserMail>ivan.ivanov@gmail.com</PopUserMail>
+              <PopUserName>{userName || "Пользователь"}</PopUserName>
+              <PopUserMail>{userLogin || ""}</PopUserMail>
               <PopUserTheme>
                 <p>Темная тема</p>
-                <input type="checkbox" className="checkbox" name="checkbox" />
+                <input
+                  type="checkbox"
+                  className="checkbox"
+                  name="checkbox"
+                  checked={isDark}
+                  onChange={toggleTheme}
+                />
               </PopUserTheme>
-                  <PopUserButton type="button">
-                    <Link to="/exit">Выйти</Link>
-                  </PopUserButton>
+              <PopUserButton type="button">
+                <Link to="/exit">Выйти</Link>
+              </PopUserButton>
             </PopUserSet>
           </Nav>
         </HeaderBlock>
